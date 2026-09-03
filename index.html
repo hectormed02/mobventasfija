@@ -16,7 +16,6 @@
       --bg: #F8FAFC; --surface: #FFFFFF; --text-main: #0F172A; --text-muted: #64748B;
       --border: #E2E8F0; --input-bg: #F1F5F9; --success: #10B981; --danger: #EF4444; --warning: #F59E0B;
     }
-    /* Seguridad: Evitar selección de texto y ocultar cursor en herramientas si logran abrir */
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
     input, select, textarea { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
     body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); }
@@ -89,7 +88,7 @@
 
   <!-- REEMPLAZA ESTO POR LA URL QUE OBTUVISTE EN GOOGLE APPS SCRIPT -->
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbyXMgHwiTlQnyynpO2RXtAc2G0sY3WvdnGdq-r4i030TyjmSUbymZBNofxsN7UF18Y5kg/exec"; 
+    const API_URL = "PEGAR_AQUI_LA_URL_DE_LA_NUEVA_IMPLEMENTACION_DE_GOOGLE"; 
   </script>
   <!-- ----------------------------------------------------------- -->
 
@@ -130,8 +129,8 @@
         <div class="section-title"><span class="material-symbols-outlined">router</span> Detalles del Servicio</div>
         <div class="form-grid">
           <div class="form-group"><label>Plan Contratado</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">dns</span><select id="r_plan"></select></div></div>
-          <div class="form-group"><label>Ancho de Banda</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">speed</span><input type="text" id="r_ancho"></div></div>
           <div class="form-group"><label>ID Access</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">settings_ethernet</span><input type="text" id="r_access"></div></div>
+          <!-- Campo de Ancho de Banda Eliminado -->
         </div>
       </div>
 
@@ -185,7 +184,8 @@
         </div>
         <div class="table-container">
           <table id="dashTable">
-            <thead><tr><th>OPP / ID</th><th>Cliente (Razón Social)</th><th>RUC</th><th>Ancho Banda</th><th>Access</th><th>Estado Actual</th></tr></thead>
+            <!-- Actualizado Ancho de banda a Plan/Servicio -->
+            <thead><tr><th>OPP / ID</th><th>Cliente (Razón Social)</th><th>RUC</th><th>Plan/Servicio</th><th>Access</th><th>Estado Actual</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -194,13 +194,8 @@
   </div>
 
   <script>
-    // ----------------------------------------------------
-    // SEGURIDAD FRONTEND EXTREMA (ANTI-INSPECCIÓN)
-    // ----------------------------------------------------
-    // Bloqueo de Clic Derecho
     document.addEventListener('contextmenu', event => event.preventDefault());
 
-    // Bloqueo de Teclas F12, Ctrl+Shift+I/J/C, Ctrl+U, Mac Cmd+Opt+I
     document.addEventListener('keydown', function(e) {
       if (
         e.key === 'F12' || 
@@ -214,15 +209,11 @@
       }
     });
 
-    // ----------------------------------------------------
-    // LÓGICA DE API (COMUNICACIÓN CON GOOGLE APPS SCRIPT)
-    // ----------------------------------------------------
     async function apiFetch(payload) {
       try {
         const response = await fetch(API_URL, {
           method: 'POST',
           body: JSON.stringify(payload),
-          // Usamos text/plain para evitar errores de preflight CORS en Google Apps Script
           headers: { 'Content-Type': 'text/plain;charset=utf-8' }
         });
         return await response.json();
@@ -231,9 +222,6 @@
       }
     }
 
-    // ----------------------------------------------------
-    // UI Y CONTROL DE PESTAÑAS
-    // ----------------------------------------------------
     function showToast(mensaje, tipo = 'success') {
       const toast = document.getElementById('toast');
       document.getElementById('toast-msg').innerText = mensaje;
@@ -265,9 +253,6 @@
       return `<span class="status-dot ${badgeClass}">${estado}</span>`;
     }
 
-    // ----------------------------------------------------
-    // CARGA INICIAL
-    // ----------------------------------------------------
     window.onload = async () => {
       if(API_URL === "PEGAR_AQUI_LA_URL_DE_LA_NUEVA_IMPLEMENTACION_DE_GOOGLE") {
         document.getElementById('loader-text').innerText = "⚠️ ERROR: Falta configurar la API_URL en el código.";
@@ -295,17 +280,19 @@
       }
     };
 
-    // ----------------------------------------------------
-    // ACCIONES
-    // ----------------------------------------------------
     async function registrar() {
       const btn = event.currentTarget;
       const data = {
-        oppId: document.getElementById('r_opp').value, ruc: document.getElementById('r_ruc').value,
-        razonSocial: document.getElementById('r_razon').value, asesor: document.getElementById('r_asesor').value,
-        plan: document.getElementById('r_plan').value, gestor: document.getElementById('r_gestor').value,
-        estado: document.getElementById('r_estado').value, supervisor: document.getElementById('r_sup').value,
-        anchoBanda: document.getElementById('r_ancho').value, access: document.getElementById('r_access').value
+        oppId: document.getElementById('r_opp').value, 
+        ruc: document.getElementById('r_ruc').value,
+        razonSocial: document.getElementById('r_razon').value, 
+        asesor: document.getElementById('r_asesor').value,
+        plan: document.getElementById('r_plan').value, 
+        gestor: document.getElementById('r_gestor').value,
+        estado: document.getElementById('r_estado').value, 
+        supervisor: document.getElementById('r_sup').value,
+        access: document.getElementById('r_access').value
+        // anchoBanda eliminado del envío
       };
       
       if(!data.oppId || !data.gestor) { showToast("El OPP / ID y el Gestor son obligatorios.", "error"); return; }
@@ -369,7 +356,8 @@
           tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 40px; color: var(--text-muted);"><span class="material-symbols-outlined" style="font-size:40px; display:block; margin-bottom:10px;">inbox</span>No hay ventas registradas.</td></tr>';
         } else {
           res.data.forEach(v => {
-            tbody.innerHTML += `<tr><td style="font-weight:600; color:var(--primary);">${v.oppId}</td><td style="font-weight:500;">${v.razonSocial}</td><td style="color:var(--text-muted);">${v.ruc}</td><td>${v.anchoBanda}</td><td>${v.access}</td><td>${getEstadoHtml(v.estado)}</td></tr>`;
+            // Se usa v.plan en lugar de v.anchoBanda
+            tbody.innerHTML += `<tr><td style="font-weight:600; color:var(--primary);">${v.oppId}</td><td style="font-weight:500;">${v.razonSocial}</td><td style="color:var(--text-muted);">${v.ruc}</td><td>${v.plan}</td><td>${v.access}</td><td>${getEstadoHtml(v.estado)}</td></tr>`;
           });
         }
         showToast("Autenticación exitosa");
