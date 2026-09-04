@@ -12,29 +12,16 @@
   
   <style>
     :root {
-      /* COLORES EXTRAÍDOS DEL LOGO MOBILENET */
-      --primary: #125699;       /* Azul del Logo */
-      --primary-hover: #0e4378; /* Azul oscuro para hover */
-      --accent: #F38220;        /* Naranja del Logo */
-      --accent-hover: #d97015;  /* Naranja oscuro para hover */
-      --text-main: #545454;     /* Gris oscuro del texto MOBILENET */
-      --text-muted: #808080;    /* Gris claro del texto "Conectando Empresas" */
-      
-      --bg: #F4F7FA; 
-      --surface: #FFFFFF; 
-      --border: #E2E8F0; 
-      --input-bg: #F8FAFC; 
-      --success: #10B981; 
-      --danger: #EF4444; 
-      --warning: #F59E0B;
+      --primary: #125699; --primary-hover: #0e4378; --accent: #F38220; --accent-hover: #d97015;
+      --text-main: #545454; --text-muted: #808080; --bg: #F4F7FA; --surface: #FFFFFF; 
+      --border: #E2E8F0; --input-bg: #F8FAFC; --success: #10B981; --danger: #EF4444; --warning: #F59E0B;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
     input, select, textarea { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
     body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); }
     
     .navbar { background-color: var(--surface); padding: 12px 5%; border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .nav-brand img { height: 45px; object-fit: contain; } /* LOGO EN NAVBAR */
-    
+    .nav-brand img { height: 45px; object-fit: contain; } 
     .nav-tabs { display: flex; gap: 8px; }
     .nav-btn { background: none; border: none; color: var(--text-main); padding: 10px 18px; font-size: 0.95rem; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.2s; display: flex; align-items: center; gap: 8px; font-family: inherit; }
     .nav-btn:hover { background-color: #f0f4f8; color: var(--primary); }
@@ -54,26 +41,28 @@
     
     .input-icon-wrapper { position: relative; display: flex; align-items: center; }
     .input-icon-wrapper .material-symbols-outlined { position: absolute; left: 14px; color: var(--text-muted); font-size: 20px; pointer-events: none; }
-    input, select { width: 100%; padding: 14px 16px 14px 44px; font-size: 0.95rem; color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; background-color: var(--input-bg); transition: all 0.2s; font-family: 'Inter', sans-serif; outline: none; appearance: none; }
+    input, select, textarea { width: 100%; padding: 14px 16px 14px 44px; font-size: 0.95rem; color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; background-color: var(--input-bg); transition: all 0.2s; font-family: 'Inter', sans-serif; outline: none; appearance: none; }
+    textarea { padding-left: 16px; min-height: 80px; resize: vertical; }
     select { padding-right: 40px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 -960 960 960' width='24'%3E%3Cpath d='M480-360 280-560h400L480-360Z' fill='%2364748B'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
-    input:focus, select:focus { background-color: white; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(18, 86, 153, 0.15); }
+    input:focus, select:focus, textarea:focus { background-color: white; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(18, 86, 153, 0.15); }
 
     .search-hero { text-align: center; max-width: 600px; margin: 40px auto; }
     .search-hero h2 { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
     .search-hero p { color: var(--text-muted); margin-bottom: 30px; }
     .search-bar { display: flex; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
     .search-bar input { border: none; border-radius: 0; padding: 18px 20px; font-size: 1.1rem; padding-left: 20px; background: white; }
-    .search-bar button { border-radius: 0; margin: 0; padding: 0 30px; font-size: 1.1rem; background-color: var(--accent); }
-    .search-bar button:hover { background-color: var(--accent-hover); }
+    .search-bar button { border-radius: 0; margin: 0; padding: 0 30px; font-size: 1.1rem; background-color: var(--accent); color:white; border:none;}
+    .search-bar button:hover { background-color: var(--accent-hover); cursor: pointer; }
 
     .btn-submit { background-color: var(--accent); color: white; border: none; padding: 14px 28px; font-size: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(243, 130, 32, 0.3); }
     .btn-submit:hover { background-color: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 6px 12px rgba(243, 130, 32, 0.4); }
     .btn-submit:disabled { background-color: var(--border); color: var(--text-muted); cursor: not-allowed; transform: none; box-shadow: none; }
-    
     .btn-outline { background-color: transparent; color: var(--primary); border: 2px solid var(--primary); padding: 12px 24px; border-radius: 8px; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.2s; cursor: pointer; font-size: 0.95rem; }
     .btn-outline:hover { background-color: var(--primary); color: white; }
+    
+    .btn-edit { background: var(--bg); color: var(--primary); border: 1px solid var(--primary); border-radius: 6px; padding: 6px 12px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
+    .btn-edit:hover { background: var(--primary); color: white; }
 
-    /* LOGO EN LOGIN */
     .login-box { max-width: 420px; margin: 20px auto; text-align: center; }
     .login-logo { margin-bottom: 30px; }
     .login-logo img { max-width: 250px; height: auto; }
@@ -91,11 +80,22 @@
     .status-warning::before { background-color: var(--warning); } .status-warning { color: #92400E; background: #FEF3C7; }
     .status-default::before { background-color: var(--text-muted); }
 
-    #loader { position: fixed; top:0; left:0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--primary); font-weight: 600; font-size: 1.1rem; }
+    /* MODAL STYLES */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
+    .modal-overlay.active { display: flex; opacity: 1; }
+    .modal-content { background: var(--surface); width: 90%; max-width: 800px; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); padding: 30px; transform: scale(0.95); transition: 0.3s; max-height: 90vh; overflow-y: auto; }
+    .modal-overlay.active .modal-content { transform: scale(1); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+    .modal-header h3 { color: var(--primary); font-size: 1.4rem; margin: 0; }
+    .btn-close { background: none; border: none; font-size: 24px; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
+    .btn-close:hover { color: var(--danger); }
+
+    #loader { position: fixed; top:0; left:0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--primary); font-weight: 600; font-size: 1.1rem; }
     .spinner { width: 45px; height: 45px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 20px; }
     @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
     
-    #toast { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-weight: 500; display: flex; align-items: center; gap: 12px; transform: translateY(100px) scale(0.9); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; }
+    #toast { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-weight: 500; display: flex; align-items: center; gap: 12px; transform: translateY(100px) scale(0.9); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 3000; }
     #toast.show { transform: translateY(0) scale(1); opacity: 1; }
     #toast.error { background: var(--danger); }
     #toast.warning { background: var(--accent); }
@@ -103,8 +103,6 @@
 </head>
 <body oncontextmenu="return false;">
 
-  <!-- =================================================================== -->
-  <!-- REEMPLAZA ESTO POR LA URL QUE OBTUVISTE EN GOOGLE APPS SCRIPT       -->
   <!-- =================================================================== -->
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyXMgHwiTlQnyynpO2RXtAc2G0sY3WvdnGdq-r4i030TyjmSUbymZBNofxsN7UF18Y5kg/exec"; 
@@ -120,9 +118,7 @@
   <div id="toast"><span class="material-symbols-outlined" id="toast-icon">info</span> <span id="toast-msg"></span></div>
 
   <nav class="navbar">
-    <div class="nav-brand">
-      <img src="logo.webp" alt="Mobilenet Logo">
-    </div>
+    <div class="nav-brand"><img src="logo.webp" alt="Mobilenet Logo"></div>
     <div class="nav-tabs">
       <button class="nav-btn active" onclick="switchTab('registro')"><span class="material-symbols-outlined">add_circle</span> Registrar Venta</button>
       <button class="nav-btn" onclick="switchTab('busqueda')"><span class="material-symbols-outlined">search</span> Búsqueda</button>
@@ -146,14 +142,12 @@
           <div class="form-group" style="grid-column: 1 / -1;"><label>Razón Social</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">corporate_fare</span><input type="text" id="r_razon"></div></div>
         </div>
       </div>
-
       <div class="form-section">
         <div class="section-title"><span class="material-symbols-outlined">router</span> Detalles del Servicio</div>
         <div class="form-grid">
           <div class="form-group"><label>Plan Contratado / Ancho de banda</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">dns</span><select id="r_plan"></select></div></div>
         </div>
       </div>
-
       <div class="form-section">
         <div class="section-title"><span class="material-symbols-outlined">assignment_ind</span> Asignación Operativa</div>
         <div class="form-grid">
@@ -174,22 +168,17 @@
         <p>Ingrese el código OPP / ID para localizar el estado actual del servicio.</p>
         <div class="search-bar">
           <input type="text" id="b_opp" placeholder="Buscar por OPP / ID..." style="flex:1;">
-          <button class="btn-submit" onclick="buscar()"><span class="material-symbols-outlined">search</span></button>
+          <button onclick="buscar()"><span class="material-symbols-outlined">search</span></button>
         </div>
       </div>
       <div id="b_resultado" style="margin-top: 40px;"></div>
     </div>
 
-    <!-- DASHBOARD / LOGIN -->
+    <!-- DASHBOARD -->
     <div id="dashboard" class="container">
       <div id="loginSection" class="login-box">
-        <!-- LOGO EN LUGAR DE ICONO -->
-        <div class="login-logo">
-          <img src="logo.webp" alt="Mobilenet">
-        </div>
-        
+        <div class="login-logo"><img src="logo.webp" alt="Mobilenet"></div>
         <p style="color: var(--text-muted); font-size:0.95rem; margin-bottom: 30px;">Área segura. Ingrese sus credenciales de gestor.</p>
-        
         <div class="form-group" style="text-align: left; margin-bottom: 20px;">
           <label>Gestor Asignado</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">account_circle</span><select id="l_gestor"></select></div>
         </div>
@@ -206,7 +195,7 @@
         </div>
         <div class="table-container">
           <table id="dashTable">
-            <thead><tr><th>OPP / ID</th><th>Cliente (Razón Social)</th><th>RUC</th><th>Plan/Servicio</th><th>Access (Auto)</th><th>Estado Actual</th></tr></thead>
+            <thead><tr><th>OPP / ID</th><th>Cliente</th><th>RUC</th><th>Plan/Servicio</th><th>Access</th><th>Estado Actual</th><th>Acciones</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -214,37 +203,44 @@
     </div>
   </div>
 
-  <style>
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.05); opacity: 0.8; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-  </style>
+  <!-- MODAL DE EDICIÓN GESTOR -->
+  <div class="modal-overlay" id="modalEdicion">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Administrar Expediente</h3>
+        <button class="btn-close" onclick="cerrarModal()">&times;</button>
+      </div>
+      <div class="form-grid">
+        <input type="hidden" id="m_oldOppId">
+        
+        <div class="form-group"><label>OPP / ID</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">tag</span><input type="text" id="m_oppId"></div></div>
+        <div class="form-group"><label>PSI / ID de solicitud</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">receipt_long</span><input type="text" id="m_psi"></div></div>
+        <div class="form-group"><label>SAF / ID Carrito</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">shopping_cart</span><input type="text" id="m_saf"></div></div>
+        <div class="form-group"><label>SIRO / ID SERVICIO</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">router</span><input type="text" id="m_siro"></div></div>
+        <div class="form-group"><label>OT</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">engineering</span><input type="text" id="m_ot"></div></div>
+        
+        <div class="form-group"><label>ESTADO</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">pending_actions</span><select id="m_estado"></select></div></div>
+        <div class="form-group"><label>FECHA DE ADMISIÓN / INSTALACIÓN</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">event</span><input type="date" id="m_fechaAdm" style="padding-left:44px;"></div></div>
+        <div class="form-group" style="grid-column: 1 / -1;"><label>OBSERVACIONES</label><textarea id="m_observaciones"></textarea></div>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
+        <button class="btn-outline" onclick="cerrarModal()">Cancelar</button>
+        <button class="btn-submit" id="btnGuardarEdicion" onclick="guardarEdicion()"><span class="material-symbols-outlined">save</span> Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     document.addEventListener('contextmenu', event => event.preventDefault());
-
     document.addEventListener('keydown', function(e) {
-      if (
-        e.key === 'F12' || 
-        (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) || 
-        (e.ctrlKey && e.key.toUpperCase() === 'U') ||
-        (e.metaKey && e.altKey && ['I','J','C'].includes(e.key.toUpperCase())) ||
-        (e.metaKey && e.shiftKey && ['C'].includes(e.key.toUpperCase()))
-      ) {
-        e.preventDefault(); 
-        return false; 
-      }
+      if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) || (e.ctrlKey && e.key.toUpperCase() === 'U') || (e.metaKey && e.altKey && ['I','J','C'].includes(e.key.toUpperCase())) || (e.metaKey && e.shiftKey && ['C'].includes(e.key.toUpperCase()))) { e.preventDefault(); return false; }
     });
+
+    let listaVentasDashboard = []; // Variable global para guardar datos del dashboard temporalmente
 
     async function apiFetch(payload) {
       try {
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          body: JSON.stringify(payload),
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-        });
+        const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'text/plain;charset=utf-8' } });
         return await response.json();
       } catch (error) {
         return { error: true, mensaje: "Error de red: No se pudo conectar con la base de datos." };
@@ -286,12 +282,9 @@
       if(API_URL === "PEGAR_AQUI_LA_URL_DE_LA_NUEVA_IMPLEMENTACION_DE_GOOGLE") {
         document.getElementById('loader-text').innerText = "⚠️ ERROR: Falta configurar la API_URL en el código.";
         document.getElementById('loader-text').style.color = "var(--danger)";
-        document.querySelector('.spinner').style.display = 'none';
-        return;
+        document.querySelector('.spinner').style.display = 'none'; return;
       }
-
       const res = await apiFetch({ action: 'getDatos' });
-      
       if (res.error) {
         document.getElementById('loader-text').innerText = "⚠️ " + res.mensaje;
         document.getElementById('loader-text').style.color = "var(--danger)";
@@ -301,6 +294,7 @@
         llenarSelect('r_plan', res.planes);
         llenarSelect('r_gestor', res.gestores);
         llenarSelect('l_gestor', res.gestores);
+        llenarSelect('m_estado', res.estados); // Llenar select del modal
         
         const loader = document.getElementById('loader');
         loader.style.opacity = '0';
@@ -311,26 +305,17 @@
     async function registrar() {
       const btn = event.currentTarget;
       const data = {
-        oppId: document.getElementById('r_opp').value, 
-        ruc: document.getElementById('r_ruc').value,
-        razonSocial: document.getElementById('r_razon').value, 
-        asesor: document.getElementById('r_asesor').value,
-        plan: document.getElementById('r_plan').value, 
-        gestor: document.getElementById('r_gestor').value,
-        supervisor: document.getElementById('r_sup').value
+        oppId: document.getElementById('r_opp').value, ruc: document.getElementById('r_ruc').value,
+        razonSocial: document.getElementById('r_razon').value, asesor: document.getElementById('r_asesor').value,
+        plan: document.getElementById('r_plan').value, gestor: document.getElementById('r_gestor').value, supervisor: document.getElementById('r_sup').value
       };
-      
       if(!data.oppId || !data.gestor) { showToast("El OPP / ID y el Gestor son obligatorios.", "error"); return; }
 
       const originalText = btn.innerHTML;
       btn.innerHTML = `<span class="material-symbols-outlined" style="animation: spin 1s linear infinite;">autorenew</span> Procesando...`;
       btn.disabled = true;
-      
       const res = await apiFetch({ action: 'registrar', ...data });
-      
-      if (res.error) {
-        showToast("Error: " + res.mensaje, "error");
-      } else {
+      if (res.error) { showToast("Error: " + res.mensaje, "error"); } else {
         showToast("Expediente guardado exitosamente");
         document.querySelectorAll('#registro input').forEach(i => i.value='');
         document.querySelectorAll('#registro select').forEach(s => s.selectedIndex = 0);
@@ -341,19 +326,14 @@
     async function buscar() {
       const opp = document.getElementById('b_opp').value;
       if(!opp) return showToast("Por favor ingrese un OPP / ID", "warning");
-      
       const resDiv = document.getElementById('b_resultado');
       resDiv.innerHTML = `<div style='text-align:center; padding:30px; color:var(--text-muted);'><span class="material-symbols-outlined" style="font-size:40px; animation: spin 1s linear infinite;">sync</span><br><br>Localizando expediente...</div>`;
       
       const res = await apiFetch({ action: 'buscar', oppId: opp });
-
-      if(res.error) {
-        resDiv.innerHTML = `<div style="text-align:center; padding:20px; color:var(--danger);">Error: ${res.mensaje}</div>`;
+      if(res.error) { resDiv.innerHTML = `<div style="text-align:center; padding:20px; color:var(--danger);">Error: ${res.mensaje}</div>`;
       } else if(res.encontrado) {
         resDiv.innerHTML = `<div class="table-container"><table style="margin-top:0;"><thead><tr><th>Gestor</th><th>Supervisor</th><th>Asesor</th><th>Cliente</th><th>RUC</th><th>OPP/ID</th><th>Estado</th></tr></thead><tbody><tr><td><b>${res.gestor}</b></td><td>${res.supervisor}</td><td>${res.asesor}</td><td>${res.razonSocial}</td><td>${res.ruc}</td><td style="color:var(--accent); font-weight:700;">${res.oppId}</td><td>${getEstadoHtml(res.estado)}</td></tr></tbody></table></div>`;
-      } else {
-        resDiv.innerHTML = `<div style="text-align:center; padding:40px; background:#FEF2F2; color:#991B1B; border-radius:12px; border: 1px dashed #F87171;"><span class="material-symbols-outlined" style="font-size:48px; margin-bottom:10px;">search_off</span><br><h3>Expediente no encontrado</h3><p>No existe ningún registro asociado al código <b>${opp}</b></p></div>`;
-      }
+      } else { resDiv.innerHTML = `<div style="text-align:center; padding:40px; background:#FEF2F2; color:#991B1B; border-radius:12px; border: 1px dashed #F87171;"><span class="material-symbols-outlined" style="font-size:48px; margin-bottom:10px;">search_off</span><br><h3>Expediente no encontrado</h3><p>No existe ningún registro asociado al código <b>${opp}</b></p></div>`; }
     }
 
     async function login() {
@@ -367,7 +347,6 @@
       btn.disabled = true;
 
       const res = await apiFetch({ action: 'login', gestor: g, password: p });
-      
       btn.innerHTML = originalText; btn.disabled = false;
       
       if(res.success) {
@@ -375,18 +354,82 @@
         document.getElementById('dashSection').style.display = 'block';
         document.getElementById('dash_title_gestor').innerText = g;
         
-        const tbody = document.querySelector('#dashTable tbody');
-        tbody.innerHTML = '';
-        if(res.data.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 40px; color: var(--text-muted);"><span class="material-symbols-outlined" style="font-size:40px; display:block; margin-bottom:10px;">inbox</span>No hay ventas registradas.</td></tr>';
-        } else {
-          res.data.forEach(v => {
-            tbody.innerHTML += `<tr><td style="font-weight:600; color:var(--primary);">${v.oppId}</td><td style="font-weight:500;">${v.razonSocial}</td><td style="color:var(--text-muted);">${v.ruc}</td><td>${v.plan}</td><td>${v.access}</td><td>${getEstadoHtml(v.estado)}</td></tr>`;
-          });
-        }
+        listaVentasDashboard = res.data; // Guardamos data para editar
+        renderizarTablaDashboard();
         showToast("Autenticación exitosa");
+      } else { showToast(res.msg || "Credenciales incorrectas", "error"); }
+    }
+
+    function renderizarTablaDashboard() {
+      const tbody = document.querySelector('#dashTable tbody');
+      tbody.innerHTML = '';
+      if(listaVentasDashboard.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 40px; color: var(--text-muted);"><span class="material-symbols-outlined" style="font-size:40px; display:block; margin-bottom:10px;">inbox</span>No hay ventas registradas.</td></tr>';
       } else {
-        showToast(res.msg || "Credenciales incorrectas", "error");
+        listaVentasDashboard.forEach((v, index) => {
+          tbody.innerHTML += `<tr><td style="font-weight:600; color:var(--primary);">${v.oppId}</td><td style="font-weight:500;">${v.razonSocial}</td><td style="color:var(--text-muted);">${v.ruc}</td><td>${v.plan}</td><td>${v.access}</td><td>${getEstadoHtml(v.estado)}</td><td><button class="btn-edit" onclick="abrirModal(${index})"><span class="material-symbols-outlined" style="font-size:16px;">edit</span> Editar</button></td></tr>`;
+        });
+      }
+    }
+
+    // ========== LOGICA MODAL EDICIÓN ============
+    function abrirModal(index) {
+      const data = listaVentasDashboard[index];
+      document.getElementById('m_oldOppId').value = data.oppId; // Clave primaria oculta
+      document.getElementById('m_oppId').value = data.oppId;
+      document.getElementById('m_psi').value = data.psi;
+      document.getElementById('m_saf').value = data.saf;
+      document.getElementById('m_siro').value = data.siro;
+      document.getElementById('m_ot').value = data.ot;
+      document.getElementById('m_estado').value = data.estado;
+      document.getElementById('m_fechaAdm').value = data.fechaAdm;
+      document.getElementById('m_observaciones').value = data.observaciones;
+      document.getElementById('modalEdicion').classList.add('active');
+    }
+
+    function cerrarModal() {
+      document.getElementById('modalEdicion').classList.remove('active');
+    }
+
+    async function guardarEdicion() {
+      const btn = document.getElementById('btnGuardarEdicion');
+      const gestor = document.getElementById('l_gestor').value;
+      const pass = document.getElementById('l_pass').value;
+
+      const payload = {
+        action: 'actualizar',
+        gestor: gestor,
+        oldOppId: document.getElementById('m_oldOppId').value,
+        oppId: document.getElementById('m_oppId').value,
+        psi: document.getElementById('m_psi').value,
+        saf: document.getElementById('m_saf').value,
+        siro: document.getElementById('m_siro').value,
+        ot: document.getElementById('m_ot').value,
+        estado: document.getElementById('m_estado').value,
+        fechaAdm: document.getElementById('m_fechaAdm').value,
+        observaciones: document.getElementById('m_observaciones').value
+      };
+
+      btn.innerHTML = `<span class="material-symbols-outlined" style="animation: spin 1s linear infinite;">autorenew</span> Guardando...`;
+      btn.disabled = true;
+
+      const res = await apiFetch(payload);
+      
+      if (res.error) {
+        showToast(res.mensaje, "error");
+        btn.innerHTML = `<span class="material-symbols-outlined">save</span> Guardar Cambios`;
+        btn.disabled = false;
+      } else {
+        showToast("Expediente actualizado correctamente");
+        cerrarModal();
+        // Recargar la tabla en silencio para ver los cambios
+        const refresh = await apiFetch({ action: 'login', gestor: gestor, password: pass });
+        if(refresh.success) {
+          listaVentasDashboard = refresh.data;
+          renderizarTablaDashboard();
+        }
+        btn.innerHTML = `<span class="material-symbols-outlined">save</span> Guardar Cambios`;
+        btn.disabled = false;
       }
     }
 
