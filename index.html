@@ -86,11 +86,13 @@
 </head>
 <body oncontextmenu="return false;">
 
-  <!-- REEMPLAZA ESTO POR LA URL QUE OBTUVISTE EN GOOGLE APPS SCRIPT -->
+  <!-- =================================================================== -->
+  <!-- REEMPLAZA ESTO POR LA URL QUE OBTUVISTE EN GOOGLE APPS SCRIPT       -->
+  <!-- =================================================================== -->
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyXMgHwiTlQnyynpO2RXtAc2G0sY3WvdnGdq-r4i030TyjmSUbymZBNofxsN7UF18Y5kg/exec"; 
   </script>
-  <!-- ----------------------------------------------------------- -->
+  <!-- =================================================================== -->
 
   <div id="loader">
     <div class="spinner"></div>
@@ -129,8 +131,6 @@
         <div class="section-title"><span class="material-symbols-outlined">router</span> Detalles del Servicio</div>
         <div class="form-grid">
           <div class="form-group"><label>Plan Contratado</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">dns</span><select id="r_plan"></select></div></div>
-          <div class="form-group"><label>ID Access</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">settings_ethernet</span><input type="text" id="r_access"></div></div>
-          <!-- Campo de Ancho de Banda Eliminado -->
         </div>
       </div>
 
@@ -140,7 +140,6 @@
           <div class="form-group"><label>Asesor Comercial</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">person</span><select id="r_asesor"></select></div></div>
           <div class="form-group"><label>Supervisor</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">manage_accounts</span><input type="text" id="r_sup"></div></div>
           <div class="form-group"><label>Gestor de Cuenta</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">support_agent</span><select id="r_gestor"></select></div></div>
-          <div class="form-group"><label>Estado Inicial</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">pending_actions</span><select id="r_estado"></select></div></div>
         </div>
       </div>
       <div style="margin-top: 30px; display: flex; justify-content: flex-end;">
@@ -184,8 +183,7 @@
         </div>
         <div class="table-container">
           <table id="dashTable">
-            <!-- Actualizado Ancho de banda a Plan/Servicio -->
-            <thead><tr><th>OPP / ID</th><th>Cliente (Razón Social)</th><th>RUC</th><th>Plan/Servicio</th><th>Access</th><th>Estado Actual</th></tr></thead>
+            <thead><tr><th>OPP / ID</th><th>Cliente (Razón Social)</th><th>RUC</th><th>Plan/Servicio</th><th>Access (Auto)</th><th>Estado Actual</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -271,7 +269,7 @@
         llenarSelect('r_asesor', res.asesores);
         llenarSelect('r_plan', res.planes);
         llenarSelect('r_gestor', res.gestores);
-        llenarSelect('r_estado', res.estados);
+        // Ya no llenamos r_estado porque se eliminó
         llenarSelect('l_gestor', res.gestores);
         
         const loader = document.getElementById('loader');
@@ -289,10 +287,7 @@
         asesor: document.getElementById('r_asesor').value,
         plan: document.getElementById('r_plan').value, 
         gestor: document.getElementById('r_gestor').value,
-        estado: document.getElementById('r_estado').value, 
-        supervisor: document.getElementById('r_sup').value,
-        access: document.getElementById('r_access').value
-        // anchoBanda eliminado del envío
+        supervisor: document.getElementById('r_sup').value
       };
       
       if(!data.oppId || !data.gestor) { showToast("El OPP / ID y el Gestor son obligatorios.", "error"); return; }
@@ -356,7 +351,6 @@
           tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 40px; color: var(--text-muted);"><span class="material-symbols-outlined" style="font-size:40px; display:block; margin-bottom:10px;">inbox</span>No hay ventas registradas.</td></tr>';
         } else {
           res.data.forEach(v => {
-            // Se usa v.plan en lugar de v.anchoBanda
             tbody.innerHTML += `<tr><td style="font-weight:600; color:var(--primary);">${v.oppId}</td><td style="font-weight:500;">${v.razonSocial}</td><td style="color:var(--text-muted);">${v.ruc}</td><td>${v.plan}</td><td>${v.access}</td><td>${getEstadoHtml(v.estado)}</td></tr>`;
           });
         }
