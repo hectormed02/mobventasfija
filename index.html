@@ -80,7 +80,6 @@
     .status-warning::before { background-color: var(--warning); } .status-warning { color: #92400E; background: #FEF3C7; }
     .status-default::before { background-color: var(--text-muted); }
 
-    /* MODAL STYLES */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
     .modal-overlay.active { display: flex; opacity: 1; }
     .modal-content { background: var(--surface); width: 90%; max-width: 800px; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); padding: 30px; transform: scale(0.95); transition: 0.3s; max-height: 90vh; overflow-y: auto; }
@@ -210,6 +209,14 @@
         <h3>Administrar Expediente</h3>
         <button class="btn-close" onclick="cerrarModal()">&times;</button>
       </div>
+
+      <!-- CUADRO DE CONTEXTO DEL CLIENTE -->
+      <div style="background: var(--input-bg); padding: 15px 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid var(--primary);">
+        <p style="margin: 0 0 5px 0; font-size: 0.95rem;"><strong>Cliente:</strong> <span id="m_ro_razonSocial" style="color: var(--primary); font-weight: 600;"></span> (RUC: <span id="m_ro_ruc"></span>)</p>
+        <p style="margin: 0 0 5px 0; font-size: 0.9rem;"><strong>Plan / Servicio:</strong> <span id="m_ro_plan"></span></p>
+        <p style="margin: 0; font-size: 0.9rem;"><strong>Asesor (EECC):</strong> <span id="m_ro_asesor"></span></p>
+      </div>
+
       <div class="form-grid">
         <input type="hidden" id="m_oldOppId">
         
@@ -236,7 +243,7 @@
       if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) || (e.ctrlKey && e.key.toUpperCase() === 'U') || (e.metaKey && e.altKey && ['I','J','C'].includes(e.key.toUpperCase())) || (e.metaKey && e.shiftKey && ['C'].includes(e.key.toUpperCase()))) { e.preventDefault(); return false; }
     });
 
-    let listaVentasDashboard = []; // Variable global para guardar datos del dashboard temporalmente
+    let listaVentasDashboard = []; 
 
     async function apiFetch(payload) {
       try {
@@ -294,7 +301,7 @@
         llenarSelect('r_plan', res.planes);
         llenarSelect('r_gestor', res.gestores);
         llenarSelect('l_gestor', res.gestores);
-        llenarSelect('m_estado', res.estados); // Llenar select del modal
+        llenarSelect('m_estado', res.estados); 
         
         const loader = document.getElementById('loader');
         loader.style.opacity = '0';
@@ -354,7 +361,7 @@
         document.getElementById('dashSection').style.display = 'block';
         document.getElementById('dash_title_gestor').innerText = g;
         
-        listaVentasDashboard = res.data; // Guardamos data para editar
+        listaVentasDashboard = res.data; 
         renderizarTablaDashboard();
         showToast("Autenticación exitosa");
       } else { showToast(res.msg || "Credenciales incorrectas", "error"); }
@@ -372,10 +379,17 @@
       }
     }
 
-    // ========== LOGICA MODAL EDICIÓN ============
     function abrirModal(index) {
       const data = listaVentasDashboard[index];
-      document.getElementById('m_oldOppId').value = data.oppId; // Clave primaria oculta
+      
+      // Llenar cuadro de contexto (Solo lectura)
+      document.getElementById('m_ro_razonSocial').innerText = data.razonSocial;
+      document.getElementById('m_ro_ruc').innerText = data.ruc;
+      document.getElementById('m_ro_plan').innerText = data.plan;
+      document.getElementById('m_ro_asesor').innerText = data.asesor;
+
+      // Llenar inputs editables
+      document.getElementById('m_oldOppId').value = data.oppId; 
       document.getElementById('m_oppId').value = data.oppId;
       document.getElementById('m_psi').value = data.psi;
       document.getElementById('m_saf').value = data.saf;
@@ -384,6 +398,7 @@
       document.getElementById('m_estado').value = data.estado;
       document.getElementById('m_fechaAdm').value = data.fechaAdm;
       document.getElementById('m_observaciones').value = data.observaciones;
+      
       document.getElementById('modalEdicion').classList.add('active');
     }
 
@@ -422,7 +437,6 @@
       } else {
         showToast("Expediente actualizado correctamente");
         cerrarModal();
-        // Recargar la tabla en silencio para ver los cambios
         const refresh = await apiFetch({ action: 'login', gestor: gestor, password: pass });
         if(refresh.success) {
           listaVentasDashboard = refresh.data;
