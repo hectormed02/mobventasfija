@@ -67,7 +67,7 @@
     .login-logo { margin-bottom: 30px; }
     .login-logo img { max-width: 250px; height: auto; }
     
-    .table-container { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 20px; overflow-x: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+    .table-container { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; overflow-x: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
     table { width: 100%; border-collapse: collapse; text-align: left; }
     th, td { padding: 16px 20px; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
     th { background-color: #f8fafc; color: var(--primary); font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
@@ -192,6 +192,23 @@
           <div><h2 style="border: none; margin: 0; font-size: 1.8rem; color: var(--primary);">Panel Operativo</h2><p style="color: var(--text-muted); margin-top: 5px;">Gestor actual: <strong id="dash_title_gestor" style="color: var(--accent);"></strong></p></div>
           <button class="btn-outline" style="color: var(--danger); border-color: var(--danger);" onclick="cerrarSesion()"><span class="material-symbols-outlined">logout</span> Salir</button>
         </div>
+        
+        <!-- BARRA DE FILTROS AÑADIDA -->
+        <div style="background: var(--input-bg); padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 20px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+          <div style="flex: 1;">
+            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">FILTRAR POR ESTADO</label>
+            <select id="f_estado" onchange="renderizarTablaDashboard()" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;"></select>
+          </div>
+          <div style="flex: 1;">
+            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">MES DE TRABAJO</label>
+            <select id="f_mes" onchange="renderizarTablaDashboard()" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;"></select>
+          </div>
+          <div style="flex: 1;">
+            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">AÑO</label>
+            <select id="f_anio" onchange="renderizarTablaDashboard()" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;"></select>
+          </div>
+        </div>
+
         <div class="table-container">
           <table id="dashTable">
             <thead><tr><th>OPP / ID</th><th>Cliente</th><th>RUC</th><th>Plan/Servicio</th><th>Access</th><th>Estado Actual</th><th>Acciones</th></tr></thead>
@@ -210,7 +227,6 @@
         <button class="btn-close" onclick="cerrarModal()">&times;</button>
       </div>
 
-      <!-- CUADRO DE CONTEXTO DEL CLIENTE -->
       <div style="background: var(--input-bg); padding: 15px 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid var(--primary);">
         <p style="margin: 0 0 5px 0; font-size: 0.95rem;"><strong>Cliente:</strong> <span id="m_ro_razonSocial" style="color: var(--primary); font-weight: 600;"></span> (RUC: <span id="m_ro_ruc"></span>)</p>
         <p style="margin: 0 0 5px 0; font-size: 0.9rem;"><strong>Plan / Servicio:</strong> <span id="m_ro_plan"></span></p>
@@ -362,19 +378,73 @@
         document.getElementById('dash_title_gestor').innerText = g;
         
         listaVentasDashboard = res.data; 
+        poblarFiltros();
         renderizarTablaDashboard();
         showToast("Autenticación exitosa");
       } else { showToast(res.msg || "Credenciales incorrectas", "error"); }
     }
 
+    // ========== FUNCIONES DE FILTRO ==========
+    function poblarFiltros() {
+      const estados = new Set();
+      const meses = new Set();
+      const anios = new Set();
+
+      listaVentasDashboard.forEach(v => {
+        if (v.estado) estados.add(v.estado.toString().trim());
+        if (v.mes) meses.add(v.mes.toString().trim().toUpperCase());
+        if (v.anio) anios.add(v.anio.toString().trim());
+      });
+
+      // Lógica de ordenamiento para meses (si están escritos en texto)
+      const ordenMeses = {"ENERO":1, "FEBRERO":2, "MARZO":3, "ABRIL":4, "MAYO":5, "JUNIO":6, "JULIO":7, "AGOSTO":8, "SEPTIEMBRE":9, "OCTUBRE":10, "NOVIEMBRE":11, "DICIEMBRE":12};
+      const mesesArray = Array.from(meses).sort((a, b) => (ordenMeses[a] || 99) - (ordenMeses[b] || 99));
+
+      llenarSelectFiltro('f_estado', Array.from(estados).sort());
+      llenarSelectFiltro('f_mes', mesesArray);
+      llenarSelectFiltro('f_anio', Array.from(anios).sort().reverse());
+    }
+
+    function llenarSelectFiltro(id, opciones) {
+      const select = document.getElementById(id);
+      const valActual = select.value; 
+      select.innerHTML = '<option value="">Todos</option>';
+      opciones.forEach(opt => {
+        const selected = (opt === valActual) ? 'selected' : '';
+        select.innerHTML += `<option value="${opt}" ${selected}>${opt}</option>`;
+      });
+    }
+
     function renderizarTablaDashboard() {
       const tbody = document.querySelector('#dashTable tbody');
       tbody.innerHTML = '';
-      if(listaVentasDashboard.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 40px; color: var(--text-muted);"><span class="material-symbols-outlined" style="font-size:40px; display:block; margin-bottom:10px;">inbox</span>No hay ventas registradas.</td></tr>';
+
+      const f_estado = document.getElementById('f_estado').value.toUpperCase();
+      const f_mes = document.getElementById('f_mes').value.toUpperCase();
+      const f_anio = document.getElementById('f_anio').value;
+
+      // Aplicar filtros dinámicos
+      const dataFiltrada = listaVentasDashboard.filter(v => {
+        const matchEstado = f_estado === "" || (v.estado && v.estado.toString().toUpperCase() === f_estado);
+        const matchMes = f_mes === "" || (v.mes && v.mes.toString().toUpperCase() === f_mes);
+        const matchAnio = f_anio === "" || (v.anio && v.anio.toString() === f_anio);
+        return matchEstado && matchMes && matchAnio;
+      });
+
+      if(dataFiltrada.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 40px; color: var(--text-muted);"><span class="material-symbols-outlined" style="font-size:40px; display:block; margin-bottom:10px;">inbox</span>No hay ventas que coincidan con los filtros.</td></tr>';
       } else {
-        listaVentasDashboard.forEach((v, index) => {
-          tbody.innerHTML += `<tr><td style="font-weight:600; color:var(--primary);">${v.oppId}</td><td style="font-weight:500;">${v.razonSocial}</td><td style="color:var(--text-muted);">${v.ruc}</td><td>${v.plan}</td><td>${v.access}</td><td>${getEstadoHtml(v.estado)}</td><td><button class="btn-edit" onclick="abrirModal(${index})"><span class="material-symbols-outlined" style="font-size:16px;">edit</span> Editar</button></td></tr>`;
+        dataFiltrada.forEach(v => {
+          const originalIndex = listaVentasDashboard.indexOf(v); // Asegura que editar abra el ítem correcto
+          tbody.innerHTML += `<tr>
+            <td style="font-weight:600; color:var(--primary);">${v.oppId}</td>
+            <td style="font-weight:500;">${v.razonSocial}</td>
+            <td style="color:var(--text-muted);">${v.ruc}</td>
+            <td>${v.plan}</td>
+            <td>${v.access}</td>
+            <td>${getEstadoHtml(v.estado)}</td>
+            <td><button class="btn-edit" onclick="abrirModal(${originalIndex})"><span class="material-symbols-outlined" style="font-size:16px;">edit</span> Editar</button></td>
+          </tr>`;
         });
       }
     }
@@ -382,13 +452,11 @@
     function abrirModal(index) {
       const data = listaVentasDashboard[index];
       
-      // Llenar cuadro de contexto (Solo lectura)
       document.getElementById('m_ro_razonSocial').innerText = data.razonSocial;
       document.getElementById('m_ro_ruc').innerText = data.ruc;
       document.getElementById('m_ro_plan').innerText = data.plan;
       document.getElementById('m_ro_asesor').innerText = data.asesor;
 
-      // Llenar inputs editables
       document.getElementById('m_oldOppId').value = data.oppId; 
       document.getElementById('m_oppId').value = data.oppId;
       document.getElementById('m_psi').value = data.psi;
@@ -440,6 +508,7 @@
         const refresh = await apiFetch({ action: 'login', gestor: gestor, password: pass });
         if(refresh.success) {
           listaVentasDashboard = refresh.data;
+          poblarFiltros(); 
           renderizarTablaDashboard();
         }
         btn.innerHTML = `<span class="material-symbols-outlined">save</span> Guardar Cambios`;
