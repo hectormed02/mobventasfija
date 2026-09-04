@@ -99,7 +99,7 @@
 
   <!-- =================================================================== -->
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbyXMgHwiTlQnyynpO2RXtAc2G0sY3WvdnGdq-r4i030TyjmSUbymZBNofxsN7UF18Y5kg/exec"; 
+    const API_URL = "PEGAR_AQUI_LA_URL_DE_LA_NUEVA_IMPLEMENTACION_DE_GOOGLE"; 
   </script>
   <!-- =================================================================== -->
 
@@ -126,10 +126,7 @@
     <div id="registro" class="container active">
       <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 35px;">
         <h2 style="font-size: 1.8rem; color: var(--primary); border: none; margin: 0;">Nuevo Expediente</h2>
-        
-        <!-- ESTE ES EL BOTÓN CORREGIDO QUE ABRE LA VENTANA -->
-        <button onclick="abrirModalUpload()" class="btn-outline"><span class="material-symbols-outlined">upload_file</span> Adjuntar PDF / Excel</button>
-        
+        <button onclick="abrirModalUpload()" class="btn-outline"><span class="material-symbols-outlined">upload_file</span> Adjuntar Archivos</button>
       </div>
       <div class="form-grid">
         <div class="form-group"><label>Código OPP / ID</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">tag</span><input type="text" id="r_opp"></div></div>
@@ -228,23 +225,24 @@
     </div>
   </div>
 
-  <!-- MODAL DE SUBIDA DE ARCHIVOS (PDF / EXCEL) ORGANIZADO POR OPP -->
+  <!-- MODAL DE SUBIDA DE ARCHIVOS (MÚLTIPLES) -->
   <div class="modal-overlay" id="modalUpload">
     <div class="modal-content" style="max-width: 500px;">
       <div class="modal-header">
-        <h3>Adjuntar Sustento (PDF / Excel)</h3>
+        <h3>Adjuntar Sustentos</h3>
         <button class="btn-close" onclick="cerrarModalUpload()">&times;</button>
       </div>
       <div style="margin-bottom: 20px;">
         <label>Código OPP / ID de la venta:</label>
         <input type="text" id="uploadOpp" placeholder="Ej: 617781" style="margin-top: 5px; margin-bottom: 15px; width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 6px;">
         
-        <label>Seleccione el archivo PDF o Excel (.xls, .xlsx):</label>
-        <input type="file" id="inputFile" accept=".pdf, .xls, .xlsx" style="margin-top: 5px; padding: 10px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 6px; width: 100%;">
+        <label>Seleccione los archivos (Soporta múltiples):</label>
+        <!-- AÑADIDO ATRIBUTO MULTIPLE AQUÍ -->
+        <input type="file" id="inputFile" accept=".pdf, .xls, .xlsx" multiple style="margin-top: 5px; padding: 10px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 6px; width: 100%;">
       </div>
       <div style="display: flex; justify-content: flex-end; gap: 10px;">
         <button class="btn-outline" onclick="cerrarModalUpload()">Cancelar</button>
-        <button class="btn-submit" onclick="subirArchivo()"><span class="material-symbols-outlined">cloud_upload</span> Crear Carpeta y Subir</button>
+        <button class="btn-submit" id="btnSubirArchivos" onclick="subirArchivo()"><span class="material-symbols-outlined">cloud_upload</span> Crear Carpeta y Subir</button>
       </div>
     </div>
   </div>
@@ -348,35 +346,61 @@
       document.getElementById('uploadOpp').value = '';
     }
 
-    function subirArchivo() {
+    // Helper para convertir el archivo
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result.split(',')[1]);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Bucle para subir múltiples archivos
+    async function subirArchivo() {
       const oppId = document.getElementById('uploadOpp').value.trim();
       const fileInput = document.getElementById('inputFile');
       
       if(!oppId) { showToast("Ingrese el código OPP / ID para crear la carpeta", "warning"); return; }
-      if(fileInput.files.length === 0) { showToast("Seleccione un archivo PDF o Excel", "warning"); return; }
+      if(fileInput.files.length === 0) { showToast("Seleccione al menos un archivo", "warning"); return; }
       
-      const file = fileInput.files[0];
-      const reader = new FileReader();
+      const btn = document.getElementById('btnSubirArchivos');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
 
-      showToast("Creando carpeta y subiendo archivo...", "warning");
-      reader.onload = async function(e) {
-        const base64Content = e.target.result.split(',')[1];
-        const res = await apiFetch({
-          action: 'subirArchivo',
-          oppId: oppId,
-          bytes: base64Content,
-          nombreArchivo: file.name,
-          mimeType: file.type
-        });
+      let subidos = 0;
+      let errores = 0;
 
-        if(res.error) {
-          showToast("Error al subir: " + res.mensaje, "error");
-        } else {
-          showToast("¡Carpeta y archivo guardados en Drive exitosamente!");
-          cerrarModalUpload();
+      for (let i = 0; i < fileInput.files.length; i++) {
+        const file = fileInput.files[i];
+        btn.innerHTML = `<span class="material-symbols-outlined" style="animation: spin 1s linear infinite;">autorenew</span> Subiendo ${i+1}/${fileInput.files.length}...`;
+        
+        try {
+          const base64Content = await fileToBase64(file);
+          const res = await apiFetch({
+            action: 'subirArchivo',
+            oppId: oppId,
+            bytes: base64Content,
+            nombreArchivo: file.name,
+            mimeType: file.type
+          });
+          
+          if (res.error) errores++;
+          else subidos++;
+        } catch(e) {
+          errores++;
         }
-      };
-      reader.readAsDataURL(file);
+      }
+
+      if (errores > 0) {
+        showToast(`Se subieron ${subidos} archivos, pero hubo ${errores} error(es).`, "error");
+      } else {
+        showToast(`¡${subidos} archivo(s) guardado(s) exitosamente en Drive!`);
+        cerrarModalUpload();
+      }
+      
+      btn.innerHTML = originalText;
+      btn.disabled = false;
     }
 
     async function registrar() {
