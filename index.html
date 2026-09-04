@@ -81,8 +81,8 @@
     .btn-close { background: none; border: none; font-size: 24px; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
     .btn-close:hover { color: var(--danger); }
 
-    /* GERENCIA STYLES */
-    .filter-bar { background: var(--input-bg); padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 20px; border: 1px solid var(--border); }
+    /* SHARED FILTER BAR */
+    .filter-bar { background: var(--input-bg); padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 20px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
     .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
     .chart-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
     .chart-card h4 { margin: 0 0 15px 0; color: var(--primary); font-size: 1rem; text-align: center;}
@@ -161,13 +161,26 @@
         <div class="form-group" style="text-align: left; margin-bottom: 30px;"><label>Contraseña</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">lock</span><input type="password" id="l_pass"></div></div>
         <button class="btn-submit" style="width: 100%;" onclick="login()">Ingresar</button>
       </div>
+      
       <div id="dashSection" style="display:none;">
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px;">
           <div><h2 style="margin:0; font-size:1.8rem; border:none; padding:0;">Panel Gestor</h2><p>Gestor: <strong id="dash_title_gestor" style="color:var(--accent);"></strong></p></div>
           <button class="btn-outline" style="color: var(--danger); border-color: var(--danger);" onclick="cerrarSesion()">Salir</button>
         </div>
         
-        <!-- TABLA GESTOR (AHORA SÍ CON ACCIONES) -->
+        <!-- FILTROS PARA EL GESTOR -->
+        <div class="filter-bar">
+          <div style="flex:1;"><label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">FILTRAR POR ESTADO</label>
+            <select id="d_estado" onchange="renderizarTablaDashboard()" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;"></select>
+          </div>
+          <div style="flex:1;"><label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">MES DE TRABAJO</label>
+            <select id="d_mes" onchange="renderizarTablaDashboard()" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;"></select>
+          </div>
+          <div style="flex:1;"><label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">AÑO</label>
+            <select id="d_anio" onchange="renderizarTablaDashboard()" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;"></select>
+          </div>
+        </div>
+
         <div class="table-container">
           <table id="dashTable">
             <thead><tr><th>OPP / ID</th><th>Cliente</th><th>RUC</th><th>Plan</th><th>Access</th><th>Estado</th><th>Acciones</th></tr></thead>
@@ -182,10 +195,15 @@
       <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid var(--primary); margin-bottom: 20px; padding-bottom: 10px;">
         <h2 style="border:none; margin:0; font-size:1.8rem;"><span class="material-symbols-outlined" style="vertical-align:bottom; color:var(--accent);">pie_chart</span> Resumen por Equipos</h2>
       </div>
+      
+      <!-- FILTROS PARA GERENCIA -->
       <div class="filter-bar">
-        <div style="flex:1;"><label>MES</label><select id="g_mes" onchange="renderizarGerencia()"></select></div>
-        <div style="flex:1;"><label>AÑO</label><select id="g_anio" onchange="renderizarGerencia()"></select></div>
+        <div style="flex:1;"><label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">MES</label>
+            <select id="g_mes" onchange="renderizarGerencia()" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;"></select></div>
+        <div style="flex:1;"><label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">AÑO</label>
+            <select id="g_anio" onchange="renderizarGerencia()" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;"></select></div>
       </div>
+
       <div class="chart-grid">
         <div class="chart-card"><h4>Cumplimiento de Meta Global</h4><canvas id="chartGauge" height="200"></canvas></div>
         <div class="chart-card"><h4>Efectividad por Supervisor (Cierres)</h4><canvas id="chartBar" height="200"></canvas></div>
@@ -217,13 +235,11 @@
         <h3>Administrar Expediente</h3>
         <button class="btn-close" onclick="cerrarModal()">&times;</button>
       </div>
-      <!-- CONTEXTO CLIENTE -->
       <div style="background: var(--input-bg); padding: 15px 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid var(--primary);">
         <p style="margin: 0 0 5px 0; font-size: 0.95rem;"><strong>Cliente:</strong> <span id="m_ro_razonSocial" style="color: var(--primary); font-weight: 600;"></span> (RUC: <span id="m_ro_ruc"></span>)</p>
         <p style="margin: 0 0 5px 0; font-size: 0.9rem;"><strong>Plan / Servicio:</strong> <span id="m_ro_plan"></span></p>
         <p style="margin: 0; font-size: 0.9rem;"><strong>Asesor (EECC):</strong> <span id="m_ro_asesor"></span></p>
       </div>
-      <!-- FORMULARIO EDICIÓN -->
       <div class="form-grid">
         <input type="hidden" id="m_oldOppId">
         <div class="form-group"><label>OPP / ID</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">tag</span><input type="text" id="m_oppId"></div></div>
@@ -247,7 +263,7 @@
 
     let dataGerenciaCruda = []; 
     let chartsInstancias = {};
-    let listaVentasDashboard = []; // Data del Gestor
+    let listaVentasDashboard = []; 
 
     const supervisoresBase = ["Gpon Elite", "Terreno", "Narda Fuentes", "Sandra Diaz", "Ricardo Panta", "Walter Salcedo", "Benjamin Acevedo", "Barbara Indriago", "Jorge Pacheco", "OFICINA"];
     const objetivosMeta = { "Gpon Elite": 50, "Terreno": 50, "Narda Fuentes": 20, "Sandra Diaz": 15, "Ricardo Panta": 15, "Walter Salcedo": 20, "Benjamin Acevedo": 10, "Barbara Indriago": 10, "Jorge Pacheco": 0, "OFICINA": 0 };
@@ -282,6 +298,11 @@
     }
 
     window.onload = async () => {
+      if(API_URL === "PEGAR_AQUI_LA_URL_DE_LA_NUEVA_IMPLEMENTACION_DE_GOOGLE") {
+        document.getElementById('loader-text').innerText = "⚠️ ERROR: Falta configurar la API_URL en el código.";
+        document.getElementById('loader-text').style.color = "var(--danger)";
+        document.querySelector('.spinner').style.display = 'none'; return;
+      }
       const res = await apiFetch({ action: 'getDatos' });
       if (!res.error) {
         document.getElementById('r_asesor').innerHTML = '<option value="">-- Seleccionar --</option>' + res.asesores.map(o=>`<option value="${o}">${o}</option>`).join('');
@@ -316,7 +337,7 @@
     }
 
     // ==========================================
-    // LÓGICA DASHBOARD GESTOR (CON EDICIÓN)
+    // LÓGICA DASHBOARD GESTOR (FILTROS + EDICIÓN)
     // ==========================================
     async function login() {
       const g = document.getElementById('l_gestor').value, p = document.getElementById('l_pass').value;
@@ -330,17 +351,57 @@
         document.getElementById('dash_title_gestor').innerText = g;
         
         listaVentasDashboard = res.data; 
+        poblarFiltrosGestor(); // <--- Llenado dinámico de filtros
         renderizarTablaDashboard();
       } else { showToast("Credenciales incorrectas", "error"); }
+    }
+
+    function poblarFiltrosGestor() {
+      const estados = new Set(), meses = new Set(), anios = new Set();
+      listaVentasDashboard.forEach(v => {
+        if (v.estado) estados.add(v.estado.toString().trim().toUpperCase());
+        if (v.mes) meses.add(v.mes.toString().trim().toUpperCase());
+        if (v.anio) anios.add(v.anio.toString().trim());
+      });
+
+      const ordenMeses = {"ENERO":1, "FEBRERO":2, "MARZO":3, "ABRIL":4, "MAYO":5, "JUNIO":6, "JULIO":7, "AGOSTO":8, "SEPTIEMBRE":9, "OCTUBRE":10, "NOVIEMBRE":11, "DICIEMBRE":12};
+      const mesesArray = Array.from(meses).sort((a, b) => (ordenMeses[a] || 99) - (ordenMeses[b] || 99));
+
+      llenarSelectFiltro('d_estado', Array.from(estados).sort());
+      llenarSelectFiltro('d_mes', mesesArray);
+      llenarSelectFiltro('d_anio', Array.from(anios).sort().reverse());
+    }
+
+    function llenarSelectFiltro(id, opciones) {
+      const select = document.getElementById(id);
+      const valActual = select.value; 
+      select.innerHTML = '<option value="">Todos</option>';
+      opciones.forEach(opt => {
+        const selected = (opt === valActual) ? 'selected' : '';
+        select.innerHTML += `<option value="${opt}" ${selected}>${opt}</option>`;
+      });
     }
 
     function renderizarTablaDashboard() {
       const tbody = document.querySelector('#dashTable tbody');
       tbody.innerHTML = '';
-      if(listaVentasDashboard.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 40px;">No hay ventas registradas.</td></tr>';
+
+      const d_estado = document.getElementById('d_estado').value.toUpperCase();
+      const d_mes = document.getElementById('d_mes').value.toUpperCase();
+      const d_anio = document.getElementById('d_anio').value;
+
+      const dataFiltrada = listaVentasDashboard.filter(v => {
+        const matchEstado = d_estado === "" || (v.estado && v.estado.toString().toUpperCase() === d_estado);
+        const matchMes = d_mes === "" || (v.mes && v.mes.toString().toUpperCase() === d_mes);
+        const matchAnio = d_anio === "" || (v.anio && v.anio.toString() === d_anio);
+        return matchEstado && matchMes && matchAnio;
+      });
+
+      if(dataFiltrada.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 40px; color: var(--text-muted);"><span class="material-symbols-outlined" style="font-size:40px; display:block; margin-bottom:10px;">inbox</span>No hay ventas que coincidan con los filtros.</td></tr>';
       } else {
-        listaVentasDashboard.forEach((v, index) => {
+        dataFiltrada.forEach(v => {
+          const originalIndex = listaVentasDashboard.indexOf(v); // Para que el botón de editar pase el índice correcto de la data cruda
           tbody.innerHTML += `<tr>
             <td><b>${v.oppId}</b></td>
             <td>${v.razonSocial}</td>
@@ -348,7 +409,7 @@
             <td>${v.plan}</td>
             <td>${v.access}</td>
             <td>${getEstadoHtml(v.estado)}</td>
-            <td><button class="btn-edit" onclick="abrirModal(${index})"><span class="material-symbols-outlined" style="font-size:16px;">edit</span> Editar</button></td>
+            <td><button class="btn-edit" onclick="abrirModal(${originalIndex})"><span class="material-symbols-outlined" style="font-size:16px;">edit</span> Editar</button></td>
           </tr>`;
         });
       }
@@ -402,6 +463,7 @@
         const refresh = await apiFetch({ action: 'login', gestor: gestor, password: pass });
         if(refresh.success) {
           listaVentasDashboard = refresh.data;
+          poblarFiltrosGestor(); // <--- Repoblar por si el estado o mes cambió
           renderizarTablaDashboard();
         }
       }
