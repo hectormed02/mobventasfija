@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema Empresarial de Ventas</title>
+  <title>MOBILENET - Gestión de Ventas</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,61 +12,78 @@
   
   <style>
     :root {
-      --primary: #0F172A; --primary-hover: #1E293B; --accent: #4F46E5; --accent-hover: #4338CA;
-      --bg: #F8FAFC; --surface: #FFFFFF; --text-main: #0F172A; --text-muted: #64748B;
-      --border: #E2E8F0; --input-bg: #F1F5F9; --success: #10B981; --danger: #EF4444; --warning: #F59E0B;
+      /* COLORES EXTRAÍDOS DEL LOGO MOBILENET */
+      --primary: #125699;       /* Azul del Logo */
+      --primary-hover: #0e4378; /* Azul oscuro para hover */
+      --accent: #F38220;        /* Naranja del Logo */
+      --accent-hover: #d97015;  /* Naranja oscuro para hover */
+      --text-main: #545454;     /* Gris oscuro del texto MOBILENET */
+      --text-muted: #808080;    /* Gris claro del texto "Conectando Empresas" */
+      
+      --bg: #F4F7FA; 
+      --surface: #FFFFFF; 
+      --border: #E2E8F0; 
+      --input-bg: #F8FAFC; 
+      --success: #10B981; 
+      --danger: #EF4444; 
+      --warning: #F59E0B;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
     input, select, textarea { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
     body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); }
     
-    .navbar { background-color: var(--surface); padding: 15px 5%; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-    .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.25rem; color: var(--primary); letter-spacing: -0.5px; }
-    .nav-brand span.material-symbols-outlined { color: var(--accent); font-size: 28px; }
-    .nav-tabs { display: flex; gap: 10px; }
-    .nav-btn { background: none; border: none; color: var(--text-muted); padding: 10px 18px; font-size: 0.9rem; font-weight: 500; cursor: pointer; border-radius: 8px; transition: all 0.2s; display: flex; align-items: center; gap: 8px; font-family: inherit; }
-    .nav-btn:hover { background-color: var(--input-bg); color: var(--primary); }
-    .nav-btn.active { background-color: var(--primary); color: white; box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.2); }
+    .navbar { background-color: var(--surface); padding: 12px 5%; border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .nav-brand img { height: 45px; object-fit: contain; } /* LOGO EN NAVBAR */
+    
+    .nav-tabs { display: flex; gap: 8px; }
+    .nav-btn { background: none; border: none; color: var(--text-main); padding: 10px 18px; font-size: 0.95rem; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.2s; display: flex; align-items: center; gap: 8px; font-family: inherit; }
+    .nav-btn:hover { background-color: #f0f4f8; color: var(--primary); }
+    .nav-btn.active { background-color: var(--primary); color: white; box-shadow: 0 4px 6px -1px rgba(18, 86, 153, 0.3); }
 
     .main-wrapper { padding: 40px 20px; max-width: 1050px; margin: 0 auto; }
-    .container { background: var(--surface); border-radius: 16px; padding: 40px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); display: none; animation: slideUp 0.4s ease-out forwards; opacity: 0; }
+    .container { background: var(--surface); border-radius: 12px; padding: 40px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08); display: none; animation: slideUp 0.4s ease-out forwards; opacity: 0; border-top: 4px solid var(--primary); }
     .container.active { display: block; }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    .section-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
-    .form-section { border-bottom: 1px solid var(--border); padding-bottom: 30px; margin-bottom: 30px; }
-    .form-section:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+    .section-title { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .form-section { margin-bottom: 35px; }
+    .form-section:last-child { margin-bottom: 0; }
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
     .form-group { display: flex; flex-direction: column; position: relative; }
-    label { font-size: 0.85rem; font-weight: 600; color: var(--primary); margin-bottom: 8px; }
+    label { font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 8px; }
     
     .input-icon-wrapper { position: relative; display: flex; align-items: center; }
     .input-icon-wrapper .material-symbols-outlined { position: absolute; left: 14px; color: var(--text-muted); font-size: 20px; pointer-events: none; }
-    input, select { width: 100%; padding: 14px 16px 14px 44px; font-size: 0.95rem; color: var(--text-main); border: 1px solid var(--border); border-radius: 10px; background-color: var(--input-bg); transition: all 0.2s; font-family: 'Inter', sans-serif; outline: none; appearance: none; }
+    input, select { width: 100%; padding: 14px 16px 14px 44px; font-size: 0.95rem; color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; background-color: var(--input-bg); transition: all 0.2s; font-family: 'Inter', sans-serif; outline: none; appearance: none; }
     select { padding-right: 40px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 -960 960 960' width='24'%3E%3Cpath d='M480-360 280-560h400L480-360Z' fill='%2364748B'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
-    input:focus, select:focus { background-color: white; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+    input:focus, select:focus { background-color: white; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(18, 86, 153, 0.15); }
 
     .search-hero { text-align: center; max-width: 600px; margin: 40px auto; }
     .search-hero h2 { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
     .search-hero p { color: var(--text-muted); margin-bottom: 30px; }
-    .search-bar { display: flex; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+    .search-bar { display: flex; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
     .search-bar input { border: none; border-radius: 0; padding: 18px 20px; font-size: 1.1rem; padding-left: 20px; background: white; }
-    .search-bar button { border-radius: 0; margin: 0; padding: 0 30px; font-size: 1.1rem; }
+    .search-bar button { border-radius: 0; margin: 0; padding: 0 30px; font-size: 1.1rem; background-color: var(--accent); }
+    .search-bar button:hover { background-color: var(--accent-hover); }
 
-    .btn-submit { background-color: var(--accent); color: white; border: none; padding: 14px 28px; font-size: 1rem; font-weight: 600; border-radius: 10px; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .btn-submit:hover { background-color: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.3); }
-    .btn-submit:disabled { background-color: var(--text-muted); cursor: not-allowed; transform: none; box-shadow: none; }
-    .btn-outline { background-color: transparent; color: var(--primary); border: 1px solid var(--border); padding: 13px 28px; border-radius: 10px; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.2s; cursor: pointer; font-size: 1rem; }
-    .btn-outline:hover { background-color: var(--input-bg); border-color: #CBD5E1; }
+    .btn-submit { background-color: var(--accent); color: white; border: none; padding: 14px 28px; font-size: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(243, 130, 32, 0.3); }
+    .btn-submit:hover { background-color: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 6px 12px rgba(243, 130, 32, 0.4); }
+    .btn-submit:disabled { background-color: var(--border); color: var(--text-muted); cursor: not-allowed; transform: none; box-shadow: none; }
+    
+    .btn-outline { background-color: transparent; color: var(--primary); border: 2px solid var(--primary); padding: 12px 24px; border-radius: 8px; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.2s; cursor: pointer; font-size: 0.95rem; }
+    .btn-outline:hover { background-color: var(--primary); color: white; }
 
+    /* LOGO EN LOGIN */
     .login-box { max-width: 420px; margin: 20px auto; text-align: center; }
-    .login-avatar { width: 70px; height: 70px; background: var(--input-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--accent); font-size: 32px; border: 1px solid var(--border); }
-    .table-container { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-top: 20px; overflow-x: auto;}
+    .login-logo { margin-bottom: 30px; }
+    .login-logo img { max-width: 250px; height: auto; }
+    
+    .table-container { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 20px; overflow-x: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
     table { width: 100%; border-collapse: collapse; text-align: left; }
     th, td { padding: 16px 20px; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
-    th { background-color: var(--bg); color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
+    th { background-color: #f8fafc; color: var(--primary); font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
     tr:last-child td { border-bottom: none; }
-    tr:hover { background-color: #F8FAFC; }
+    tr:hover { background-color: #f1f5f9; }
     
     .status-dot { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.85rem; padding: 4px 10px; border-radius: 6px; background: var(--input-bg); }
     .status-dot::before { content: ''; display: block; width: 8px; height: 8px; border-radius: 50%; }
@@ -74,14 +91,14 @@
     .status-warning::before { background-color: var(--warning); } .status-warning { color: #92400E; background: #FEF3C7; }
     .status-default::before { background-color: var(--text-muted); }
 
-    #loader { position: fixed; top:0; left:0; width: 100%; height: 100%; background: rgba(255,255,255,0.85); backdrop-filter: blur(4px); z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--primary); font-weight: 600; font-size: 1.1rem; }
-    .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 15px; }
+    #loader { position: fixed; top:0; left:0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--primary); font-weight: 600; font-size: 1.1rem; }
+    .spinner { width: 45px; height: 45px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 20px; }
     @keyframes spin { to { transform: rotate(360deg); } }
     
-    #toast { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); font-weight: 500; display: flex; align-items: center; gap: 10px; transform: translateY(100px) scale(0.9); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; }
+    #toast { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-weight: 500; display: flex; align-items: center; gap: 12px; transform: translateY(100px) scale(0.9); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; }
     #toast.show { transform: translateY(0) scale(1); opacity: 1; }
     #toast.error { background: var(--danger); }
-    #toast.success { background: var(--success); }
+    #toast.warning { background: var(--accent); }
   </style>
 </head>
 <body oncontextmenu="return false;">
@@ -95,6 +112,7 @@
   <!-- =================================================================== -->
 
   <div id="loader">
+    <img src="logo.webp" alt="Mobilenet" style="max-width: 150px; margin-bottom: 20px; animation: pulse 2s infinite;">
     <div class="spinner"></div>
     <span id="loader-text">Conectando a la base de datos...</span>
   </div>
@@ -102,7 +120,9 @@
   <div id="toast"><span class="material-symbols-outlined" id="toast-icon">info</span> <span id="toast-msg"></span></div>
 
   <nav class="navbar">
-    <div class="nav-brand"><span class="material-symbols-outlined">analytics</span>CRM Ventas</div>
+    <div class="nav-brand">
+      <img src="logo.webp" alt="Mobilenet Logo">
+    </div>
     <div class="nav-tabs">
       <button class="nav-btn active" onclick="switchTab('registro')"><span class="material-symbols-outlined">add_circle</span> Registrar Venta</button>
       <button class="nav-btn" onclick="switchTab('busqueda')"><span class="material-symbols-outlined">search</span> Búsqueda</button>
@@ -113,7 +133,7 @@
   <div class="main-wrapper">
     <!-- REGISTRO -->
     <div id="registro" class="container active">
-      <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 30px;">
+      <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 35px;">
         <h2 style="font-size: 1.8rem; color: var(--primary); border: none; margin: 0;">Nuevo Expediente</h2>
         <a href="https://script.google.com/macros/s/AKfycbyXMgHwiTlQnyynpO2RXtAc2G0sY3WvdnGdq-r4i030TyjmSUbymZBNofxsN7UF18Y5kg/exec" target="_blank" class="btn-outline"><span class="material-symbols-outlined">upload_file</span> Adjuntar PDF</a>
       </div>
@@ -130,19 +150,19 @@
       <div class="form-section">
         <div class="section-title"><span class="material-symbols-outlined">router</span> Detalles del Servicio</div>
         <div class="form-grid">
-          <div class="form-group"><label>Plan Contratado</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">dns</span><select id="r_plan"></select></div></div>
+          <div class="form-group"><label>Plan Contratado / Ancho de banda</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">dns</span><select id="r_plan"></select></div></div>
         </div>
       </div>
 
       <div class="form-section">
         <div class="section-title"><span class="material-symbols-outlined">assignment_ind</span> Asignación Operativa</div>
         <div class="form-grid">
-          <div class="form-group"><label>Asesor Comercial</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">person</span><select id="r_asesor"></select></div></div>
+          <div class="form-group"><label>Asesor Comercial (EECC)</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">person</span><select id="r_asesor"></select></div></div>
           <div class="form-group"><label>Supervisor</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">manage_accounts</span><input type="text" id="r_sup"></div></div>
           <div class="form-group"><label>Gestor de Cuenta</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">support_agent</span><select id="r_gestor"></select></div></div>
         </div>
       </div>
-      <div style="margin-top: 30px; display: flex; justify-content: flex-end;">
+      <div style="margin-top: 35px; display: flex; justify-content: flex-end;">
         <button class="btn-submit" onclick="registrar()"><span class="material-symbols-outlined">save</span> Guardar Expediente</button>
       </div>
     </div>
@@ -163,9 +183,12 @@
     <!-- DASHBOARD / LOGIN -->
     <div id="dashboard" class="container">
       <div id="loginSection" class="login-box">
-        <div class="login-avatar"><span class="material-symbols-outlined">shield_person</span></div>
-        <h2 style="border:none; margin-bottom:10px;">Acceso Gestor</h2>
-        <p style="color: var(--text-muted); font-size:0.9rem; margin-bottom: 30px;">Área segura. Ingrese sus credenciales.</p>
+        <!-- LOGO EN LUGAR DE ICONO -->
+        <div class="login-logo">
+          <img src="logo.webp" alt="Mobilenet">
+        </div>
+        
+        <p style="color: var(--text-muted); font-size:0.95rem; margin-bottom: 30px;">Área segura. Ingrese sus credenciales de gestor.</p>
         
         <div class="form-group" style="text-align: left; margin-bottom: 20px;">
           <label>Gestor Asignado</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">account_circle</span><select id="l_gestor"></select></div>
@@ -177,9 +200,9 @@
       </div>
       
       <div id="dashSection" style="display:none;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px;">
-          <div><h2 style="border: none; margin: 0; font-size: 1.8rem;">Panel Operativo</h2><p style="color: var(--text-muted); margin-top: 5px;">Gestor actual: <strong id="dash_title_gestor" style="color: var(--primary);"></strong></p></div>
-          <button class="btn-outline" style="color: var(--danger); border-color: var(--danger); padding: 10px 20px;" onclick="cerrarSesion()"><span class="material-symbols-outlined">logout</span> Salir</button>
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border);">
+          <div><h2 style="border: none; margin: 0; font-size: 1.8rem; color: var(--primary);">Panel Operativo</h2><p style="color: var(--text-muted); margin-top: 5px;">Gestor actual: <strong id="dash_title_gestor" style="color: var(--accent);"></strong></p></div>
+          <button class="btn-outline" style="color: var(--danger); border-color: var(--danger);" onclick="cerrarSesion()"><span class="material-symbols-outlined">logout</span> Salir</button>
         </div>
         <div class="table-container">
           <table id="dashTable">
@@ -190,6 +213,14 @@
       </div>
     </div>
   </div>
+
+  <style>
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
 
   <script>
     document.addEventListener('contextmenu', event => event.preventDefault());
@@ -269,7 +300,6 @@
         llenarSelect('r_asesor', res.asesores);
         llenarSelect('r_plan', res.planes);
         llenarSelect('r_gestor', res.gestores);
-        // Ya no llenamos r_estado porque se eliminó
         llenarSelect('l_gestor', res.gestores);
         
         const loader = document.getElementById('loader');
@@ -318,7 +348,7 @@
       const res = await apiFetch({ action: 'buscar', oppId: opp });
 
       if(res.error) {
-        resDiv.innerHTML = `<div style="text-align:center; padding:20px; color:#991B1B;">Error: ${res.mensaje}</div>`;
+        resDiv.innerHTML = `<div style="text-align:center; padding:20px; color:var(--danger);">Error: ${res.mensaje}</div>`;
       } else if(res.encontrado) {
         resDiv.innerHTML = `<div class="table-container"><table style="margin-top:0;"><thead><tr><th>Gestor</th><th>Supervisor</th><th>Asesor</th><th>Cliente</th><th>RUC</th><th>OPP/ID</th><th>Estado</th></tr></thead><tbody><tr><td><b>${res.gestor}</b></td><td>${res.supervisor}</td><td>${res.asesor}</td><td>${res.razonSocial}</td><td>${res.ruc}</td><td style="color:var(--accent); font-weight:700;">${res.oppId}</td><td>${getEstadoHtml(res.estado)}</td></tr></tbody></table></div>`;
       } else {
