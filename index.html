@@ -9,15 +9,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-  
+  <!-- Chart.js para gráficas -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     :root {
       --primary: #125699; --primary-hover: #0e4378; --accent: #F38220; --accent-hover: #d97015;
       --text-main: #545454; --text-muted: #808080; --bg: #F4F7FA; --surface: #FFFFFF; 
       --border: #E2E8F0; --input-bg: #F8FAFC; --success: #10B981; --danger: #EF4444; --warning: #F59E0B;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
-    input, select, textarea { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; -moz-user-select: none; user-select: none; }
+    input, select, textarea { -webkit-user-select: text; -moz-user-select: text; user-select: text; }
     body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); }
     
     .navbar { background-color: var(--surface); padding: 12px 5%; border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
@@ -27,15 +29,13 @@
     .nav-btn:hover { background-color: #f0f4f8; color: var(--primary); }
     .nav-btn.active { background-color: var(--primary); color: white; box-shadow: 0 4px 6px -1px rgba(18, 86, 153, 0.3); }
 
-    .main-wrapper { padding: 40px 20px; max-width: 1050px; margin: 0 auto; }
+    .main-wrapper { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
     .container { background: var(--surface); border-radius: 12px; padding: 40px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08); display: none; animation: slideUp 0.4s ease-out forwards; opacity: 0; border-top: 4px solid var(--primary); }
     .container.active { display: block; }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     .section-title { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-    .form-section { margin-bottom: 35px; }
-    .form-section:last-child { margin-bottom: 0; }
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 35px;}
     .form-group { display: flex; flex-direction: column; position: relative; }
     label { font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 8px; }
     
@@ -43,61 +43,39 @@
     .input-icon-wrapper .material-symbols-outlined { position: absolute; left: 14px; color: var(--text-muted); font-size: 20px; pointer-events: none; }
     input, select, textarea { width: 100%; padding: 14px 16px 14px 44px; font-size: 0.95rem; color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; background-color: var(--input-bg); transition: all 0.2s; font-family: 'Inter', sans-serif; outline: none; appearance: none; }
     textarea { padding-left: 16px; min-height: 80px; resize: vertical; }
-    select { padding-right: 40px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 -960 960 960' width='24'%3E%3Cpath d='M480-360 280-560h400L480-360Z' fill='%2364748B'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
     input:focus, select:focus, textarea:focus { background-color: white; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(18, 86, 153, 0.15); }
-
-    .search-hero { text-align: center; max-width: 600px; margin: 40px auto; }
-    .search-hero h2 { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
-    .search-hero p { color: var(--text-muted); margin-bottom: 30px; }
-    .search-bar { display: flex; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
-    .search-bar input { border: none; border-radius: 0; padding: 18px 20px; font-size: 1.1rem; padding-left: 20px; background: white; }
-    .search-bar button { border-radius: 0; margin: 0; padding: 0 30px; font-size: 1.1rem; background-color: var(--accent); color:white; border:none;}
-    .search-bar button:hover { background-color: var(--accent-hover); cursor: pointer; }
 
     .btn-submit { background-color: var(--accent); color: white; border: none; padding: 14px 28px; font-size: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(243, 130, 32, 0.3); }
     .btn-submit:hover { background-color: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 6px 12px rgba(243, 130, 32, 0.4); }
     .btn-submit:disabled { background-color: var(--border); color: var(--text-muted); cursor: not-allowed; transform: none; box-shadow: none; }
     .btn-outline { background-color: transparent; color: var(--primary); border: 2px solid var(--primary); padding: 12px 24px; border-radius: 8px; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.2s; cursor: pointer; font-size: 0.95rem; }
     .btn-outline:hover { background-color: var(--primary); color: white; }
-    
-    .btn-edit { background: var(--bg); color: var(--primary); border: 1px solid var(--primary); border-radius: 6px; padding: 6px 12px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
-    .btn-edit:hover { background: var(--primary); color: white; }
 
-    .login-box { max-width: 420px; margin: 20px auto; text-align: center; }
-    .login-logo { margin-bottom: 30px; }
-    .login-logo img { max-width: 250px; height: auto; }
+    /* DASHBOARD GERENCIA SPECIFICS */
+    .filter-bar { background: var(--input-bg); padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 20px; border: 1px solid var(--border); }
+    .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+    .chart-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+    .chart-card h4 { margin: 0 0 15px 0; color: var(--primary); font-size: 1rem; text-align: center;}
     
-    .table-container { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; overflow-x: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-    table { width: 100%; border-collapse: collapse; text-align: left; }
-    th, td { padding: 16px 20px; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
-    th { background-color: #f8fafc; color: var(--primary); font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
-    tr:last-child td { border-bottom: none; }
+    .table-container { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 20px; overflow-x: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+    table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; }
+    th, td { padding: 12px 15px; font-size: 0.85rem; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+    th { background-color: var(--primary); color: white; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; text-align: center; }
     tr:hover { background-color: #f1f5f9; }
-    
-    .status-dot { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.85rem; padding: 4px 10px; border-radius: 6px; background: var(--input-bg); }
-    .status-dot::before { content: ''; display: block; width: 8px; height: 8px; border-radius: 50%; }
-    .status-success::before { background-color: var(--success); } .status-success { color: #065F46; background: #D1FAE5; }
-    .status-warning::before { background-color: var(--warning); } .status-warning { color: #92400E; background: #FEF3C7; }
-    .status-default::before { background-color: var(--text-muted); }
-
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
-    .modal-overlay.active { display: flex; opacity: 1; }
-    .modal-content { background: var(--surface); width: 90%; max-width: 800px; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); padding: 30px; transform: scale(0.95); transition: 0.3s; max-height: 90vh; overflow-y: auto; }
-    .modal-overlay.active .modal-content { transform: scale(1); }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-    .modal-header h3 { color: var(--primary); font-size: 1.4rem; margin: 0; }
-    .btn-close { background: none; border: none; font-size: 24px; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
-    .btn-close:hover { color: var(--danger); }
+    .col-process { background-color: #e0f2fe; color: #0369a1; font-weight: 600; text-align: center;}
+    .col-success { background-color: #dcfce7; color: #047857; font-weight: 600; text-align: center;}
+    .col-danger { background-color: #fee2e2; color: #b91c1c; text-align: center; }
+    .col-warning { background-color: #fef3c7; color: #b45309; font-weight: bold; text-align: right; }
+    .col-dark { background-color: #0f172a; color: white; font-weight: bold; text-align: center; }
+    .total-row td { background-color: var(--primary); color: white; font-weight: bold; text-align: center; border-color: #2563eb;}
 
     #loader { position: fixed; top:0; left:0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--primary); font-weight: 600; font-size: 1.1rem; }
     .spinner { width: 45px; height: 45px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 20px; }
     @keyframes spin { to { transform: rotate(360deg); } }
     @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
     
-    #toast { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-weight: 500; display: flex; align-items: center; gap: 12px; transform: translateY(100px) scale(0.9); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 3000; }
+    #toast { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-weight: 500; display: flex; align-items: center; gap: 12px; transform: translateY(100px) scale(0.9); opacity: 0; transition: 0.3s; z-index: 3000; }
     #toast.show { transform: translateY(0) scale(1); opacity: 1; }
-    #toast.error { background: var(--danger); }
-    #toast.warning { background: var(--accent); }
   </style>
 </head>
 <body oncontextmenu="return false;">
@@ -119,9 +97,10 @@
   <nav class="navbar">
     <div class="nav-brand"><img src="logo.webp" alt="Mobilenet Logo"></div>
     <div class="nav-tabs">
-      <button class="nav-btn active" onclick="switchTab('registro')"><span class="material-symbols-outlined">add_circle</span> Registrar Venta</button>
-      <button class="nav-btn" onclick="switchTab('busqueda')"><span class="material-symbols-outlined">search</span> Búsqueda</button>
-      <button class="nav-btn" onclick="switchTab('dashboard')"><span class="material-symbols-outlined">dashboard</span> Panel Gestor</button>
+      <button class="nav-btn active" onclick="switchTab('registro')"><span class="material-symbols-outlined">add_circle</span> Nuevo</button>
+      <button class="nav-btn" onclick="switchTab('busqueda')"><span class="material-symbols-outlined">search</span> Buscar</button>
+      <button class="nav-btn" onclick="switchTab('dashboard')"><span class="material-symbols-outlined">shield_person</span> Panel Gestor</button>
+      <button class="nav-btn" onclick="abrirGerencia()" style="color: var(--accent);"><span class="material-symbols-outlined">insights</span> Gerencia</button>
     </div>
   </nav>
 
@@ -132,395 +111,281 @@
         <h2 style="font-size: 1.8rem; color: var(--primary); border: none; margin: 0;">Nuevo Expediente</h2>
         <a href="https://script.google.com/macros/s/AKfycbyXMgHwiTlQnyynpO2RXtAc2G0sY3WvdnGdq-r4i030TyjmSUbymZBNofxsN7UF18Y5kg/exec" target="_blank" class="btn-outline"><span class="material-symbols-outlined">upload_file</span> Adjuntar PDF</a>
       </div>
-
-      <div class="form-section">
-        <div class="section-title"><span class="material-symbols-outlined">domain</span> Datos del Cliente</div>
-        <div class="form-grid">
-          <div class="form-group"><label>Código OPP / ID</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">tag</span><input type="text" id="r_opp"></div></div>
-          <div class="form-group"><label>RUC</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">badge</span><input type="text" id="r_ruc"></div></div>
-          <div class="form-group" style="grid-column: 1 / -1;"><label>Razón Social</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">corporate_fare</span><input type="text" id="r_razon"></div></div>
-        </div>
+      <div class="form-grid">
+        <div class="form-group"><label>Código OPP / ID</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">tag</span><input type="text" id="r_opp"></div></div>
+        <div class="form-group"><label>RUC</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">badge</span><input type="text" id="r_ruc"></div></div>
+        <div class="form-group"><label>Razón Social</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">corporate_fare</span><input type="text" id="r_razon"></div></div>
+        <div class="form-group"><label>Plan Contratado</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">dns</span><select id="r_plan"></select></div></div>
+        <div class="form-group"><label>Asesor Comercial (EECC)</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">person</span><select id="r_asesor"></select></div></div>
+        <div class="form-group"><label>Supervisor</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">manage_accounts</span><input type="text" id="r_sup"></div></div>
+        <div class="form-group"><label>Gestor de Cuenta</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">support_agent</span><select id="r_gestor"></select></div></div>
       </div>
-      <div class="form-section">
-        <div class="section-title"><span class="material-symbols-outlined">router</span> Detalles del Servicio</div>
-        <div class="form-grid">
-          <div class="form-group"><label>Plan Contratado / Ancho de banda</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">dns</span><select id="r_plan"></select></div></div>
-        </div>
-      </div>
-      <div class="form-section">
-        <div class="section-title"><span class="material-symbols-outlined">assignment_ind</span> Asignación Operativa</div>
-        <div class="form-grid">
-          <div class="form-group"><label>Asesor Comercial (EECC)</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">person</span><select id="r_asesor"></select></div></div>
-          <div class="form-group"><label>Supervisor</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">manage_accounts</span><input type="text" id="r_sup"></div></div>
-          <div class="form-group"><label>Gestor de Cuenta</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">support_agent</span><select id="r_gestor"></select></div></div>
-        </div>
-      </div>
-      <div style="margin-top: 35px; display: flex; justify-content: flex-end;">
-        <button class="btn-submit" onclick="registrar()"><span class="material-symbols-outlined">save</span> Guardar Expediente</button>
-      </div>
+      <div style="display: flex; justify-content: flex-end;"><button class="btn-submit" onclick="registrar()"><span class="material-symbols-outlined">save</span> Guardar Expediente</button></div>
     </div>
 
     <!-- BÚSQUEDA -->
     <div id="busqueda" class="container">
-      <div class="search-hero">
-        <h2>Rastreo de Expediente</h2>
-        <p>Ingrese el código OPP / ID para localizar el estado actual del servicio.</p>
-        <div class="search-bar">
-          <input type="text" id="b_opp" placeholder="Buscar por OPP / ID..." style="flex:1;">
-          <button onclick="buscar()"><span class="material-symbols-outlined">search</span></button>
+      <div style="text-align: center; max-width: 600px; margin: 40px auto;">
+        <h2 style="font-size: 2rem; color: var(--primary);">Rastreo de Expediente</h2>
+        <div style="display: flex; border-radius: 8px; overflow: hidden; border: 1px solid var(--border);">
+          <input type="text" id="b_opp" placeholder="Buscar por OPP / ID..." style="flex:1; border:none; padding-left:20px;">
+          <button onclick="buscar()" style="background:var(--accent); color:white; border:none; padding:0 30px; cursor:pointer;"><span class="material-symbols-outlined">search</span></button>
         </div>
       </div>
       <div id="b_resultado" style="margin-top: 40px;"></div>
     </div>
 
-    <!-- DASHBOARD -->
+    <!-- DASHBOARD GESTOR -->
     <div id="dashboard" class="container">
-      <div id="loginSection" class="login-box">
-        <div class="login-logo"><img src="logo.webp" alt="Mobilenet"></div>
-        <p style="color: var(--text-muted); font-size:0.95rem; margin-bottom: 30px;">Área segura. Ingrese sus credenciales de gestor.</p>
-        <div class="form-group" style="text-align: left; margin-bottom: 20px;">
-          <label>Gestor Asignado</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">account_circle</span><select id="l_gestor"></select></div>
-        </div>
-        <div class="form-group" style="text-align: left; margin-bottom: 30px;">
-          <label>Contraseña</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">lock</span><input type="password" id="l_pass"></div>
-        </div>
-        <button class="btn-submit" style="width: 100%;" onclick="login()">Ingresar al Sistema <span class="material-symbols-outlined">arrow_forward</span></button>
+      <div id="loginSection" style="max-width: 420px; margin: 20px auto; text-align: center;">
+        <img src="logo.webp" alt="Mobilenet" style="max-width: 250px; margin-bottom: 30px;">
+        <div class="form-group" style="text-align: left; margin-bottom: 20px;"><label>Gestor</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">account_circle</span><select id="l_gestor"></select></div></div>
+        <div class="form-group" style="text-align: left; margin-bottom: 30px;"><label>Contraseña</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">lock</span><input type="password" id="l_pass"></div></div>
+        <button class="btn-submit" style="width: 100%;" onclick="login()">Ingresar</button>
       </div>
-      
       <div id="dashSection" style="display:none;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border);">
-          <div><h2 style="border: none; margin: 0; font-size: 1.8rem; color: var(--primary);">Panel Operativo</h2><p style="color: var(--text-muted); margin-top: 5px;">Gestor actual: <strong id="dash_title_gestor" style="color: var(--accent);"></strong></p></div>
-          <button class="btn-outline" style="color: var(--danger); border-color: var(--danger);" onclick="cerrarSesion()"><span class="material-symbols-outlined">logout</span> Salir</button>
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px;">
+          <div><h2 style="margin:0; font-size:1.8rem; border:none; padding:0;">Panel Gestor</h2><p>Gestor: <strong id="dash_title_gestor" style="color:var(--accent);"></strong></p></div>
+          <button class="btn-outline" style="color: var(--danger); border-color: var(--danger);" onclick="cerrarSesion()">Salir</button>
         </div>
-        
-        <!-- BARRA DE FILTROS AÑADIDA -->
-        <div style="background: var(--input-bg); padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 20px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-          <div style="flex: 1;">
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">FILTRAR POR ESTADO</label>
-            <select id="f_estado" onchange="renderizarTablaDashboard()" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;"></select>
-          </div>
-          <div style="flex: 1;">
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">MES DE TRABAJO</label>
-            <select id="f_mes" onchange="renderizarTablaDashboard()" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;"></select>
-          </div>
-          <div style="flex: 1;">
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">AÑO</label>
-            <select id="f_anio" onchange="renderizarTablaDashboard()" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;"></select>
-          </div>
-        </div>
-
-        <div class="table-container">
-          <table id="dashTable">
-            <thead><tr><th>OPP / ID</th><th>Cliente</th><th>RUC</th><th>Plan/Servicio</th><th>Access</th><th>Estado Actual</th><th>Acciones</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
+        <div class="table-container"><table id="dashTable"><thead><tr><th>OPP / ID</th><th>Cliente</th><th>RUC</th><th>Plan</th><th>Access</th><th>Estado</th></tr></thead><tbody></tbody></table></div>
       </div>
     </div>
-  </div>
 
-  <!-- MODAL DE EDICIÓN GESTOR -->
-  <div class="modal-overlay" id="modalEdicion">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Administrar Expediente</h3>
-        <button class="btn-close" onclick="cerrarModal()">&times;</button>
+    <!-- DASHBOARD GERENCIA -->
+    <div id="gerencia" class="container" style="max-width: 100%;">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid var(--primary); margin-bottom: 20px; padding-bottom: 10px;">
+        <h2 style="border:none; margin:0; font-size:1.8rem;"><span class="material-symbols-outlined" style="vertical-align:bottom; color:var(--accent);">pie_chart</span> Resumen por Equipos</h2>
       </div>
 
-      <div style="background: var(--input-bg); padding: 15px 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid var(--primary);">
-        <p style="margin: 0 0 5px 0; font-size: 0.95rem;"><strong>Cliente:</strong> <span id="m_ro_razonSocial" style="color: var(--primary); font-weight: 600;"></span> (RUC: <span id="m_ro_ruc"></span>)</p>
-        <p style="margin: 0 0 5px 0; font-size: 0.9rem;"><strong>Plan / Servicio:</strong> <span id="m_ro_plan"></span></p>
-        <p style="margin: 0; font-size: 0.9rem;"><strong>Asesor (EECC):</strong> <span id="m_ro_asesor"></span></p>
+      <div class="filter-bar">
+        <div style="flex:1;"><label>MES</label><select id="g_mes" onchange="renderizarGerencia()"></select></div>
+        <div style="flex:1;"><label>AÑO</label><select id="g_anio" onchange="renderizarGerencia()"></select></div>
       </div>
 
-      <div class="form-grid">
-        <input type="hidden" id="m_oldOppId">
-        
-        <div class="form-group"><label>OPP / ID</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">tag</span><input type="text" id="m_oppId"></div></div>
-        <div class="form-group"><label>PSI / ID de solicitud</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">receipt_long</span><input type="text" id="m_psi"></div></div>
-        <div class="form-group"><label>SAF / ID Carrito</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">shopping_cart</span><input type="text" id="m_saf"></div></div>
-        <div class="form-group"><label>SIRO / ID SERVICIO</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">router</span><input type="text" id="m_siro"></div></div>
-        <div class="form-group"><label>OT</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">engineering</span><input type="text" id="m_ot"></div></div>
-        
-        <div class="form-group"><label>ESTADO</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">pending_actions</span><select id="m_estado"></select></div></div>
-        <div class="form-group"><label>FECHA DE ADMISIÓN / INSTALACIÓN</label><div class="input-icon-wrapper"><span class="material-symbols-outlined">event</span><input type="date" id="m_fechaAdm" style="padding-left:44px;"></div></div>
-        <div class="form-group" style="grid-column: 1 / -1;"><label>OBSERVACIONES</label><textarea id="m_observaciones"></textarea></div>
+      <div class="chart-grid">
+        <div class="chart-card"><h4>Cumplimiento de Meta Global</h4><canvas id="chartGauge" height="200"></canvas></div>
+        <div class="chart-card"><h4>Efectividad por Supervisor (Cierres)</h4><canvas id="chartBar" height="200"></canvas></div>
+        <div class="chart-card" style="grid-column: 1 / -1;"><h4>Cuellos de Botella (Expedientes en Proceso)</h4><canvas id="chartStacked" height="120"></canvas></div>
       </div>
-      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
-        <button class="btn-outline" onclick="cerrarModal()">Cancelar</button>
-        <button class="btn-submit" id="btnGuardarEdicion" onclick="guardarEdicion()"><span class="material-symbols-outlined">save</span> Guardar Cambios</button>
+
+      <div class="table-container">
+        <table id="gerenciaTable">
+          <thead>
+            <tr>
+              <th rowspan="2">EQUIPO</th>
+              <th colspan="7" style="background:#0284c7;">EN PROCESO</th>
+              <th rowspan="2" class="col-process">TOTAL PROCESO</th>
+              <th colspan="2" style="background:#15803d;">ÉXITOSAS</th>
+              <th rowspan="2" class="col-success">TOTAL ADM+INST</th>
+              <th rowspan="2" style="background:#ea580c;">PROSPECTO</th>
+              <th rowspan="2" class="col-danger">ANULADO</th>
+              <th rowspan="2" class="col-warning">ACCESS VÁLIDO</th>
+              <th rowspan="2" class="col-dark">OBJETIVO</th>
+              <th rowspan="2" style="background:#0ea5e9;">ACCESS REAL</th>
+            </tr>
+            <tr>
+              <th style="background:#0369a1;">PEND. PSI</th><th style="background:#0369a1;">PEND. SAF</th><th style="background:#0369a1;">SAF ENV.</th><th style="background:#0369a1;">ANEXOS ENV.</th><th style="background:#0369a1;">OBSERVADO</th><th style="background:#0369a1;">DEUDA</th><th style="background:#0369a1;">PEND. INST.</th>
+              <th style="background:#166534;">ADMITIDA</th><th style="background:#166534;">INSTALADA</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
     </div>
   </div>
 
   <script>
-    document.addEventListener('contextmenu', event => event.preventDefault());
-    document.addEventListener('keydown', function(e) {
-      if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) || (e.ctrlKey && e.key.toUpperCase() === 'U') || (e.metaKey && e.altKey && ['I','J','C'].includes(e.key.toUpperCase())) || (e.metaKey && e.shiftKey && ['C'].includes(e.key.toUpperCase()))) { e.preventDefault(); return false; }
-    });
+    document.addEventListener('keydown', e => { if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key.toUpperCase()))||(e.ctrlKey&&e.key.toUpperCase()==='U')){e.preventDefault();return false;} });
 
-    let listaVentasDashboard = []; 
+    let dataGerenciaCruda = []; 
+    let chartsInstancias = {};
+
+    const supervisoresBase = ["Gpon Elite", "Terreno", "Narda Fuentes", "Sandra Diaz", "Ricardo Panta", "Walter Salcedo", "Benjamin Acevedo", "Barbara Indriago", "Jorge Pacheco", "OFICINA"];
+    const objetivosMeta = { "Gpon Elite": 50, "Terreno": 50, "Narda Fuentes": 20, "Sandra Diaz": 15, "Ricardo Panta": 15, "Walter Salcedo": 20, "Benjamin Acevedo": 10, "Barbara Indriago": 10, "Jorge Pacheco": 0, "OFICINA": 0 };
 
     async function apiFetch(payload) {
       try {
         const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'text/plain;charset=utf-8' } });
         return await response.json();
-      } catch (error) {
-        return { error: true, mensaje: "Error de red: No se pudo conectar con la base de datos." };
-      }
+      } catch (error) { return { error: true, mensaje: "Error de red" }; }
     }
 
-    function showToast(mensaje, tipo = 'success') {
+    function showToast(msg, tipo='success') {
       const toast = document.getElementById('toast');
-      document.getElementById('toast-msg').innerText = mensaje;
-      document.getElementById('toast-icon').innerText = tipo === 'error' ? 'error' : tipo === 'warning' ? 'warning' : 'check_circle';
+      document.getElementById('toast-msg').innerText = msg;
       toast.className = 'show ' + tipo;
-      setTimeout(() => { toast.className = toast.className.replace('show', ''); }, 4000);
+      setTimeout(() => toast.className = toast.className.replace('show', ''), 4000);
     }
 
     function switchTab(tabId) {
       document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      const target = document.getElementById(tabId);
-      target.classList.add('active');
-      target.style.animation = 'none'; target.offsetHeight; target.style.animation = 'slideUp 0.4s ease-out forwards';
+      document.getElementById(tabId).classList.add('active');
       event.currentTarget.classList.add('active');
     }
 
-    function llenarSelect(id, opciones) {
-      const select = document.getElementById(id);
-      select.innerHTML = '<option value="">-- Seleccionar --</option>';
-      opciones.forEach(opt => select.innerHTML += `<option value="${opt}">${opt}</option>`);
-    }
-
-    function getEstadoHtml(estado) {
-      const est = estado.toString().toUpperCase();
-      let badgeClass = 'status-default';
-      if (est.includes('INSTALADA')) badgeClass = 'status-success';
-      if (est.includes('ADMITIDA')) badgeClass = 'status-warning';
-      return `<span class="status-dot ${badgeClass}">${estado}</span>`;
-    }
-
     window.onload = async () => {
-      if(API_URL === "PEGAR_AQUI_LA_URL_DE_LA_NUEVA_IMPLEMENTACION_DE_GOOGLE") {
-        document.getElementById('loader-text').innerText = "⚠️ ERROR: Falta configurar la API_URL en el código.";
-        document.getElementById('loader-text').style.color = "var(--danger)";
-        document.querySelector('.spinner').style.display = 'none'; return;
-      }
       const res = await apiFetch({ action: 'getDatos' });
-      if (res.error) {
-        document.getElementById('loader-text').innerText = "⚠️ " + res.mensaje;
-        document.getElementById('loader-text').style.color = "var(--danger)";
-        document.querySelector('.spinner').style.display = 'none';
-      } else {
-        llenarSelect('r_asesor', res.asesores);
-        llenarSelect('r_plan', res.planes);
-        llenarSelect('r_gestor', res.gestores);
-        llenarSelect('l_gestor', res.gestores);
-        llenarSelect('m_estado', res.estados); 
-        
-        const loader = document.getElementById('loader');
-        loader.style.opacity = '0';
-        setTimeout(() => loader.style.display = 'none', 500);
+      if (!res.error) {
+        document.getElementById('r_asesor').innerHTML = '<option value="">-- Seleccionar --</option>' + res.asesores.map(o=>`<option value="${o}">${o}</option>`).join('');
+        document.getElementById('r_plan').innerHTML = '<option value="">-- Seleccionar --</option>' + res.planes.map(o=>`<option value="${o}">${o}</option>`).join('');
+        document.getElementById('r_gestor').innerHTML = '<option value="">-- Seleccionar --</option>' + res.gestores.map(o=>`<option value="${o}">${o}</option>`).join('');
+        document.getElementById('l_gestor').innerHTML = '<option value="">-- Seleccionar --</option>' + res.gestores.map(o=>`<option value="${o}">${o}</option>`).join('');
+        document.getElementById('loader').style.display = 'none';
       }
     };
 
     async function registrar() {
-      const btn = event.currentTarget;
       const data = {
-        oppId: document.getElementById('r_opp').value, ruc: document.getElementById('r_ruc').value,
-        razonSocial: document.getElementById('r_razon').value, asesor: document.getElementById('r_asesor').value,
-        plan: document.getElementById('r_plan').value, gestor: document.getElementById('r_gestor').value, supervisor: document.getElementById('r_sup').value
+        oppId: document.getElementById('r_opp').value, ruc: document.getElementById('r_ruc').value, razonSocial: document.getElementById('r_razon').value, 
+        asesor: document.getElementById('r_asesor').value, plan: document.getElementById('r_plan').value, gestor: document.getElementById('r_gestor').value, supervisor: document.getElementById('r_sup').value
       };
-      if(!data.oppId || !data.gestor) { showToast("El OPP / ID y el Gestor son obligatorios.", "error"); return; }
-
-      const originalText = btn.innerHTML;
-      btn.innerHTML = `<span class="material-symbols-outlined" style="animation: spin 1s linear infinite;">autorenew</span> Procesando...`;
-      btn.disabled = true;
+      if(!data.oppId || !data.gestor) return showToast("El OPP / ID y el Gestor son obligatorios.", "error");
+      
+      const btn = event.currentTarget; btn.disabled = true; btn.innerHTML = 'Procesando...';
       const res = await apiFetch({ action: 'registrar', ...data });
-      if (res.error) { showToast("Error: " + res.mensaje, "error"); } else {
-        showToast("Expediente guardado exitosamente");
-        document.querySelectorAll('#registro input').forEach(i => i.value='');
-        document.querySelectorAll('#registro select').forEach(s => s.selectedIndex = 0);
-      }
-      btn.innerHTML = originalText; btn.disabled = false;
+      if (!res.error) { showToast("Guardado exitosamente"); document.querySelectorAll('#registro input').forEach(i=>i.value=''); }
+      btn.innerHTML = `<span class="material-symbols-outlined">save</span> Guardar Expediente`; btn.disabled = false;
     }
 
     async function buscar() {
       const opp = document.getElementById('b_opp').value;
-      if(!opp) return showToast("Por favor ingrese un OPP / ID", "warning");
       const resDiv = document.getElementById('b_resultado');
-      resDiv.innerHTML = `<div style='text-align:center; padding:30px; color:var(--text-muted);'><span class="material-symbols-outlined" style="font-size:40px; animation: spin 1s linear infinite;">sync</span><br><br>Localizando expediente...</div>`;
-      
+      resDiv.innerHTML = "Buscando...";
       const res = await apiFetch({ action: 'buscar', oppId: opp });
-      if(res.error) { resDiv.innerHTML = `<div style="text-align:center; padding:20px; color:var(--danger);">Error: ${res.mensaje}</div>`;
-      } else if(res.encontrado) {
-        resDiv.innerHTML = `<div class="table-container"><table style="margin-top:0;"><thead><tr><th>Gestor</th><th>Supervisor</th><th>Asesor</th><th>Cliente</th><th>RUC</th><th>OPP/ID</th><th>Estado</th></tr></thead><tbody><tr><td><b>${res.gestor}</b></td><td>${res.supervisor}</td><td>${res.asesor}</td><td>${res.razonSocial}</td><td>${res.ruc}</td><td style="color:var(--accent); font-weight:700;">${res.oppId}</td><td>${getEstadoHtml(res.estado)}</td></tr></tbody></table></div>`;
-      } else { resDiv.innerHTML = `<div style="text-align:center; padding:40px; background:#FEF2F2; color:#991B1B; border-radius:12px; border: 1px dashed #F87171;"><span class="material-symbols-outlined" style="font-size:48px; margin-bottom:10px;">search_off</span><br><h3>Expediente no encontrado</h3><p>No existe ningún registro asociado al código <b>${opp}</b></p></div>`; }
+      if(res.encontrado) resDiv.innerHTML = `<div class="table-container"><table><thead><tr><th>Gestor</th><th>Asesor</th><th>Cliente</th><th>OPP/ID</th><th>Estado</th></tr></thead><tbody><tr><td>${res.gestor}</td><td>${res.asesor}</td><td>${res.razonSocial}</td><td><b>${res.oppId}</b></td><td>${res.estado}</td></tr></tbody></table></div>`;
+      else resDiv.innerHTML = `<p style="text-align:center; color:red;">No se encontró el código.</p>`;
     }
 
     async function login() {
-      const g = document.getElementById('l_gestor').value;
-      const p = document.getElementById('l_pass').value;
-      if(!g || !p) return showToast("Faltan credenciales", "warning");
-
-      const btn = event.currentTarget;
-      const originalText = btn.innerHTML;
-      btn.innerHTML = `<span class="material-symbols-outlined" style="animation: spin 1s linear infinite;">lock_open</span> Validando...`;
-      btn.disabled = true;
-
+      const g = document.getElementById('l_gestor').value, p = document.getElementById('l_pass').value;
+      const btn = event.currentTarget; btn.disabled = true; btn.innerHTML = 'Validando...';
       const res = await apiFetch({ action: 'login', gestor: g, password: p });
-      btn.innerHTML = originalText; btn.disabled = false;
-      
+      btn.innerHTML = 'Ingresar al Sistema'; btn.disabled = false;
       if(res.success) {
-        document.getElementById('loginSection').style.display = 'none';
-        document.getElementById('dashSection').style.display = 'block';
+        document.getElementById('loginSection').style.display = 'none'; document.getElementById('dashSection').style.display = 'block';
         document.getElementById('dash_title_gestor').innerText = g;
+        const tbody = document.querySelector('#dashTable tbody'); tbody.innerHTML = '';
+        res.data.forEach(v => tbody.innerHTML += `<tr><td><b>${v.oppId}</b></td><td>${v.razonSocial}</td><td>${v.ruc}</td><td>${v.plan}</td><td>${v.access}</td><td>${v.estado}</td></tr>`);
+      } else { showToast("Credenciales incorrectas", "error"); }
+    }
+
+    function cerrarSesion() { document.getElementById('dashSection').style.display = 'none'; document.getElementById('loginSection').style.display = 'block'; }
+
+    // ==========================================
+    // LÓGICA DASHBOARD GERENCIA (INTELIGENTE)
+    // ==========================================
+    async function abrirGerencia() {
+      switchTab('gerencia');
+      document.getElementById('loader').style.display = 'flex';
+      const res = await apiFetch({ action: 'gerencia' });
+      if(res.success) {
+        dataGerenciaCruda = res.data;
+        const meses = new Set(), anios = new Set();
+        dataGerenciaCruda.forEach(d => { if(d.mes) meses.add(d.mes); if(d.anio) anios.add(d.anio); });
         
-        listaVentasDashboard = res.data; 
-        poblarFiltros();
-        renderizarTablaDashboard();
-        showToast("Autenticación exitosa");
-      } else { showToast(res.msg || "Credenciales incorrectas", "error"); }
+        document.getElementById('g_mes').innerHTML = '<option value="">Todos los Meses</option>' + Array.from(meses).map(m=>`<option value="${m}">${m}</option>`).join('');
+        document.getElementById('g_anio').innerHTML = '<option value="">Todos los Años</option>' + Array.from(anios).map(a=>`<option value="${a}">${a}</option>`).join('');
+        renderizarGerencia();
+      }
+      document.getElementById('loader').style.display = 'none';
     }
 
-    // ========== FUNCIONES DE FILTRO ==========
-    function poblarFiltros() {
-      const estados = new Set();
-      const meses = new Set();
-      const anios = new Set();
+    function renderizarGerencia() {
+      const f_mes = document.getElementById('g_mes').value;
+      const f_anio = document.getElementById('g_anio').value;
+      
+      let dataFiltrada = dataGerenciaCruda;
+      if(f_mes) dataFiltrada = dataFiltrada.filter(d => d.mes === f_mes);
+      if(f_anio) dataFiltrada = dataFiltrada.filter(d => d.anio === f_anio);
 
-      listaVentasDashboard.forEach(v => {
-        if (v.estado) estados.add(v.estado.toString().trim());
-        if (v.mes) meses.add(v.mes.toString().trim().toUpperCase());
-        if (v.anio) anios.add(v.anio.toString().trim());
+      // Estructura de consolidación
+      let consol = {};
+      supervisoresBase.forEach(s => { consol[s] = { pPsi:0, pSaf:0, safE:0, anexE:0, obs:0, deuda:0, pInst:0, adm:0, inst:0, prosp:0, anul:0, access:0 }; });
+
+      dataFiltrada.forEach(row => {
+        let sup = row.supervisor;
+        if(!consol[sup]) consol[sup] = { pPsi:0, pSaf:0, safE:0, anexE:0, obs:0, deuda:0, pInst:0, adm:0, inst:0, prosp:0, anul:0, access:0 };
+        
+        let est = row.estado;
+        if(est === 'PENDIENTE PSI') consol[sup].pPsi++;
+        else if(est === 'PENDIENTE SAF') consol[sup].pSaf++;
+        else if(est === 'SAF ENVIADA') consol[sup].safE++;
+        else if(est === 'ANEXOS ENVIADOS') consol[sup].anexE++;
+        else if(est === 'OBSERVADO') consol[sup].obs++;
+        else if(est === 'DEUDA') consol[sup].deuda++;
+        else if(est === 'PEND. DE INST.') consol[sup].pInst++;
+        else if(est === 'ADMITIDA') { consol[sup].adm++; consol[sup].access += row.access; }
+        else if(est === 'INSTALADA') { consol[sup].inst++; consol[sup].access += row.access; }
+        else if(est === 'PROSPECTO') consol[sup].prosp++;
+        else if(est === 'ANULADO') consol[sup].anul++;
       });
 
-      // Lógica de ordenamiento para meses (si están escritos en texto)
-      const ordenMeses = {"ENERO":1, "FEBRERO":2, "MARZO":3, "ABRIL":4, "MAYO":5, "JUNIO":6, "JULIO":7, "AGOSTO":8, "SEPTIEMBRE":9, "OCTUBRE":10, "NOVIEMBRE":11, "DICIEMBRE":12};
-      const mesesArray = Array.from(meses).sort((a, b) => (ordenMeses[a] || 99) - (ordenMeses[b] || 99));
-
-      llenarSelectFiltro('f_estado', Array.from(estados).sort());
-      llenarSelectFiltro('f_mes', mesesArray);
-      llenarSelectFiltro('f_anio', Array.from(anios).sort().reverse());
-    }
-
-    function llenarSelectFiltro(id, opciones) {
-      const select = document.getElementById(id);
-      const valActual = select.value; 
-      select.innerHTML = '<option value="">Todos</option>';
-      opciones.forEach(opt => {
-        const selected = (opt === valActual) ? 'selected' : '';
-        select.innerHTML += `<option value="${opt}" ${selected}>${opt}</option>`;
-      });
-    }
-
-    function renderizarTablaDashboard() {
-      const tbody = document.querySelector('#dashTable tbody');
+      const tbody = document.querySelector('#gerenciaTable tbody');
       tbody.innerHTML = '';
+      
+      let totObj=0, tProcesoGlobal=0, tCierreGlobal=0;
+      let labels=[], chartData=[], stackData={ psi:[], saf:[], obs:[], inst:[] };
 
-      const f_estado = document.getElementById('f_estado').value.toUpperCase();
-      const f_mes = document.getElementById('f_mes').value.toUpperCase();
-      const f_anio = document.getElementById('f_anio').value;
+      Object.keys(consol).forEach(sup => {
+        let d = consol[sup];
+        let tProceso = d.pPsi + d.pSaf + d.safE + d.anexE + d.obs + d.deuda + d.pInst;
+        let tAdmInst = d.adm + d.inst;
+        let obj = objetivosMeta[sup] || 0;
+        
+        totObj += obj; tProcesoGlobal += tProceso; tCierreGlobal += tAdmInst;
+        labels.push(sup); chartData.push(tAdmInst);
+        stackData.psi.push(d.pPsi); stackData.saf.push(d.pSaf + d.safE); stackData.obs.push(d.obs + d.deuda); stackData.inst.push(d.pInst);
 
-      // Aplicar filtros dinámicos
-      const dataFiltrada = listaVentasDashboard.filter(v => {
-        const matchEstado = f_estado === "" || (v.estado && v.estado.toString().toUpperCase() === f_estado);
-        const matchMes = f_mes === "" || (v.mes && v.mes.toString().toUpperCase() === f_mes);
-        const matchAnio = f_anio === "" || (v.anio && v.anio.toString() === f_anio);
-        return matchEstado && matchMes && matchAnio;
+        tbody.innerHTML += `<tr>
+          <td style="font-weight:bold; color:var(--primary);">${sup}</td>
+          <td>${d.pPsi||'-'}</td><td>${d.pSaf||'-'}</td><td>${d.safE||'-'}</td><td>${d.anexE||'-'}</td><td>${d.obs||'-'}</td><td>${d.deuda||'-'}</td><td>${d.pInst||'-'}</td>
+          <td class="col-process">${tProceso||'-'}</td>
+          <td style="color:#166534;">${d.adm||'-'}</td><td style="color:#166534;">${d.inst||'-'}</td>
+          <td class="col-success">${tAdmInst||'-'}</td>
+          <td style="color:#c2410c;">${d.prosp||'-'}</td><td class="col-danger">${d.anul||'-'}</td>
+          <td class="col-warning">S/ ${d.access.toFixed(2)}</td><td class="col-dark">${obj||'-'}</td><td style="color:#0369a1; font-weight:bold;">S/ ${d.access.toFixed(2)}</td>
+        </tr>`;
       });
 
-      if(dataFiltrada.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 40px; color: var(--text-muted);"><span class="material-symbols-outlined" style="font-size:40px; display:block; margin-bottom:10px;">inbox</span>No hay ventas que coincidan con los filtros.</td></tr>';
-      } else {
-        dataFiltrada.forEach(v => {
-          const originalIndex = listaVentasDashboard.indexOf(v); // Asegura que editar abra el ítem correcto
-          tbody.innerHTML += `<tr>
-            <td style="font-weight:600; color:var(--primary);">${v.oppId}</td>
-            <td style="font-weight:500;">${v.razonSocial}</td>
-            <td style="color:var(--text-muted);">${v.ruc}</td>
-            <td>${v.plan}</td>
-            <td>${v.access}</td>
-            <td>${getEstadoHtml(v.estado)}</td>
-            <td><button class="btn-edit" onclick="abrirModal(${originalIndex})"><span class="material-symbols-outlined" style="font-size:16px;">edit</span> Editar</button></td>
-          </tr>`;
-        });
-      }
+      // Dibujar Gráficas
+      dibujarGraficas(labels, chartData, stackData, tCierreGlobal, totObj);
     }
 
-    function abrirModal(index) {
-      const data = listaVentasDashboard[index];
-      
-      document.getElementById('m_ro_razonSocial').innerText = data.razonSocial;
-      document.getElementById('m_ro_ruc').innerText = data.ruc;
-      document.getElementById('m_ro_plan').innerText = data.plan;
-      document.getElementById('m_ro_asesor').innerText = data.asesor;
+    function dibujarGraficas(labels, cierres, stack, totalCierre, totalMeta) {
+      if(chartsInstancias.gauge) chartsInstancias.gauge.destroy();
+      if(chartsInstancias.bar) chartsInstancias.bar.destroy();
+      if(chartsInstancias.stacked) chartsInstancias.stacked.destroy();
 
-      document.getElementById('m_oldOppId').value = data.oppId; 
-      document.getElementById('m_oppId').value = data.oppId;
-      document.getElementById('m_psi').value = data.psi;
-      document.getElementById('m_saf').value = data.saf;
-      document.getElementById('m_siro').value = data.siro;
-      document.getElementById('m_ot').value = data.ot;
-      document.getElementById('m_estado').value = data.estado;
-      document.getElementById('m_fechaAdm').value = data.fechaAdm;
-      document.getElementById('m_observaciones').value = data.observaciones;
-      
-      document.getElementById('modalEdicion').classList.add('active');
-    }
+      // 1. GAUGE (Doughnut)
+      const ctxG = document.getElementById('chartGauge').getContext('2d');
+      chartsInstancias.gauge = new Chart(ctxG, {
+        type: 'doughnut',
+        data: { labels: ['Cerradas', 'Faltante'], datasets: [{ data: [totalCierre, Math.max(0, totalMeta - totalCierre)], backgroundColor: ['#10B981', '#E2E8F0'] }] },
+        options: { rotation: -90, circumference: 180, plugins: { title: {display:true, text: `${totalCierre} de ${totalMeta} Meta`} } }
+      });
 
-    function cerrarModal() {
-      document.getElementById('modalEdicion').classList.remove('active');
-    }
+      // 2. BARRAS (Ranking)
+      const ctxB = document.getElementById('chartBar').getContext('2d');
+      chartsInstancias.bar = new Chart(ctxB, {
+        type: 'bar',
+        data: { labels: labels, datasets: [{ label: 'Total ADM+INST', data: cierres, backgroundColor: '#125699' }] },
+        options: { indexAxis: 'y', scales: { x: { beginAtZero: true } } }
+      });
 
-    async function guardarEdicion() {
-      const btn = document.getElementById('btnGuardarEdicion');
-      const gestor = document.getElementById('l_gestor').value;
-      const pass = document.getElementById('l_pass').value;
-
-      const payload = {
-        action: 'actualizar',
-        gestor: gestor,
-        oldOppId: document.getElementById('m_oldOppId').value,
-        oppId: document.getElementById('m_oppId').value,
-        psi: document.getElementById('m_psi').value,
-        saf: document.getElementById('m_saf').value,
-        siro: document.getElementById('m_siro').value,
-        ot: document.getElementById('m_ot').value,
-        estado: document.getElementById('m_estado').value,
-        fechaAdm: document.getElementById('m_fechaAdm').value,
-        observaciones: document.getElementById('m_observaciones').value
-      };
-
-      btn.innerHTML = `<span class="material-symbols-outlined" style="animation: spin 1s linear infinite;">autorenew</span> Guardando...`;
-      btn.disabled = true;
-
-      const res = await apiFetch(payload);
-      
-      if (res.error) {
-        showToast(res.mensaje, "error");
-        btn.innerHTML = `<span class="material-symbols-outlined">save</span> Guardar Cambios`;
-        btn.disabled = false;
-      } else {
-        showToast("Expediente actualizado correctamente");
-        cerrarModal();
-        const refresh = await apiFetch({ action: 'login', gestor: gestor, password: pass });
-        if(refresh.success) {
-          listaVentasDashboard = refresh.data;
-          poblarFiltros(); 
-          renderizarTablaDashboard();
-        }
-        btn.innerHTML = `<span class="material-symbols-outlined">save</span> Guardar Cambios`;
-        btn.disabled = false;
-      }
-    }
-
-    function cerrarSesion() {
-      document.getElementById('l_pass').value = '';
-      document.getElementById('dashSection').style.display = 'none';
-      document.getElementById('loginSection').style.display = 'block';
-      showToast("Sesión cerrada por seguridad", "warning");
+      // 3. APILADO (Cuellos de Botella)
+      const ctxS = document.getElementById('chartStacked').getContext('2d');
+      chartsInstancias.stacked = new Chart(ctxS, {
+        type: 'bar',
+        data: { labels: labels, datasets: [
+          { label: 'Pend. PSI', data: stack.psi, backgroundColor: '#cbd5e1' },
+          { label: 'SAF (Pend/Env)', data: stack.saf, backgroundColor: '#94a3b8' },
+          { label: 'Observado/Deuda', data: stack.obs, backgroundColor: '#ef4444' },
+          { label: 'Pend. Inst.', data: stack.inst, backgroundColor: '#f59e0b' }
+        ]},
+        options: { scales: { x: { stacked: true }, y: { stacked: true } } }
+      });
     }
   </script>
 </body>
